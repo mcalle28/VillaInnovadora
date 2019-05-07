@@ -12,7 +12,7 @@ var gestPer = require("../Middelware/gestionPersonaje");
 var partidas = new Map();
 
 router.get("/", (req, res) => {
-    res.send("Holiwiwiwis");
+    res.send("Goro Akechi es el mejor personaje de Persona 5 ");
 }
 )
 
