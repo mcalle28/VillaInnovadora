@@ -11,6 +11,11 @@ var gestPer = require("../Middelware/gestionPersonaje");
 
 var partidas = new Map();
 
+router.get("/", (req, res) => {
+    res.send("Holiwiwiwis");
+}
+)
+
 //Este metodo toma el codigo de una partida y la configura para el dia y la noche. 
 //Tambien pone la secuencia actual y se puede ver como una forma para iniciar la partida.
 router.post("/configurarPartida", (req, res, next) => {
