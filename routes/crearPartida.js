@@ -12,7 +12,7 @@ var gestPer = require("../Middelware/gestionPersonaje");
 var partidas = new Map();
 
 router.get("/", (req, res) => {
-    res.send("Server Villa Innovadora Demo ");
+    res.send("<h1>¡Server Villa Innovadora!</h1>");
 }
 )
 
