@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 var express = require("express");
 var router = express();
 var Jugador = require("../classes/Jugador");
@@ -12,7 +12,7 @@ var gestPer = require("../Middelware/gestionPersonaje");
 var partidas = new Map();
 
 router.get("/", (req, res) => {
-    res.send("Goro Akechi te amo ");
+    res.send("Server Villa Innovadora ");
 }
 )
 
