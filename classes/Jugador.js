@@ -12,6 +12,7 @@ module.exports = class Jugador {
        //Este campo se usara para las personas que ganen proteccion por algun evento.
        this.protected = false;
        this.beenPostulated = false; 
+       this.hasPostulated = false;
        //Este campo sirve como idea del jugador en eventos y tambien como justificacion cuando postule a un creaticida.
        this.idea = "";
        //Se usara solo en el juicio cuando este ya vote ene l juicio esta variable vuelve a ser falsa

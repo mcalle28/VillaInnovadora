@@ -28,3 +28,5 @@ app.use(crearRoute);
 //app.use(obtenerJugadores);
 app.listen(process.env.PORT, () => {
 });
+
+console.log("Running...");

@@ -11,10 +11,13 @@ module.exports = class Votaciones{
         this.jugadoresEmpatados = [];
     }
 
-    postularJugador(_jugadorNombre, _partidas, _codigo){
+    postularJugador(_jugadorNombre, _partidas, _codigo, _nombrePostulador){
         _partidas[_codigo].jugadores.forEach(e => {
             if(e.nombre == _jugadorNombre){
                 this.postulados.push(e);
+            }
+            if(e.nombre == _nombrePostulador){
+                e.hasPostulated = true;
             }
         });
     }
@@ -47,7 +50,7 @@ module.exports = class Votaciones{
                 this.jugadoresEmpatados.push(element);
                 this.jugadoresEmpatados.push(this.ganador);
                 this.empate = true;
-                this.ganador = "null";
+                this.ganador = this.ganador;
             }
         });
 
