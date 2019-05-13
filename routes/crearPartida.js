@@ -1182,4 +1182,25 @@ router.post("/esperaJugador", (req, res, next) => {
     }
 });
 
+//Ruta para conocer si alguien ha usado el poder
+router.post("/poderUsado", (req, res, next) => {
+    let fetchedUser;
+    partidas[req.body.codigo].jugadores.forEach(e => {
+        if(e.nombre == req.body.nombreJugador){
+            fetchedUser = e;
+        }
+    });
+    if(fetchedUser.powerUsed == true){
+        res.status(200).json({
+            message: "La persona ha usado el poder", 
+            validation: true,
+        });
+    }else{
+        res.status(200).json({
+            message: "La persona no ha usado el poder", 
+            validation: false,
+        }); 
+    }
+});
+
 module.exports = router;
