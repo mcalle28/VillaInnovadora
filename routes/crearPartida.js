@@ -308,6 +308,12 @@ if(partidas[req.body.codigo] != undefined){
             //La desicion de salvar a alguien o no (true or false)....en el nombre a buscar tambien puede estar el estado para salvarse a si mismo.
             e.carta.poder(partidas[req.body.codigo].jugadores, req.body.nombreABuscar, req.body.desicionA);
             e.powerUsed = true;
+            if(req.body.desicionA == "salvar"){
+            e.powerUsedDescription = "El usuario desicio salvar";
+            }else{
+            e.powerUsedDescription = "El usuario decidio desmotivar"
+            }
+        
         }
     });
 
@@ -1183,7 +1189,7 @@ router.post("/esperaJugador", (req, res, next) => {
 });
 
 //Ruta para conocer si alguien ha usado el poder
-router.post("/poderUsado", (req, res, next) => {
+router.post("/poderUsadoEstado", (req, res, next) => {
     let fetchedUser;
     partidas[req.body.codigo].jugadores.forEach(e => {
         if(e.nombre == req.body.nombreJugador){
@@ -1194,6 +1200,7 @@ router.post("/poderUsado", (req, res, next) => {
         res.status(200).json({
             message: "La persona ha usado el poder", 
             validation: true,
+            description: fetchedUser.powerUsedDescription
         });
     }else{
         res.status(200).json({
