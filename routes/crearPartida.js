@@ -300,28 +300,55 @@ router.post("/seguiAccionCreaticidas", (req, res, next) => {
 
 router.post("/accionEstado", (req, res, next) => {
 
-if(partidas[req.body.codigo] != undefined){
-    partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
-    partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
-    partidas[req.body.codigo].jugadores.forEach(e => {
-        if(e.nombre == req.body.nombreEstado){
-            //La desicion de salvar a alguien o no (true or false)....en el nombre a buscar tambien puede estar el estado para salvarse a si mismo.
-            e.carta.poder(partidas[req.body.codigo].jugadores, req.body.nombreABuscar, req.body.desicionA);
-            e.powerUsed = true;
+    if(partidas[req.body.codigo] != undefined){
+        partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
+        partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
+        partidas[req.body.codigo].jugadores.forEach(e => {
+            if(e.nombre == req.body.nombreEstado){
+                //La desicion de salvar a alguien o no (true or false)....en el nombre a buscar tambien puede estar el estado para salvarse a si mismo.
+                e.carta.poder(partidas[req.body.codigo].jugadores, req.body.nombreABuscar, req.body.desicionA);
+                e.powerUsed = true;
+                if(req.body.desicionA == "salvar"){
+                e.powerUsedDescription = "haSalvado";
+                }else{
+                e.powerUsedDescription = "haDesmotivado"
+                }
+            
+            }
+        });
+    
+        res.status(200).json({
+            message: "se tomo la desicion de " + req.body.desicionA
+        });
+    
+    }else{
+        res.status(404).json({
+            message: "No se logro encontrar la partida"
+        });
+    }
+    
+    });
+
+    router.post("/poderUsadoEstado", (req, res, next) => {
+        let fetchedUser;
+        partidas[req.body.codigo].jugadores.forEach(e => {
+            if(e.nombre == req.body.nombreJugador){
+                fetchedUser = e;
+            }
+        });
+        if(fetchedUser.powerUsed == true){
+            res.status(200).json({
+                message: "La persona ha usado el poder", 
+                validation: true,
+                description: fetchedUser.powerUsedDescription
+            });
+        }else{
+            res.status(200).json({
+                message: "La persona no ha usado el poder", 
+                validation: false,
+            }); 
         }
     });
-
-    res.status(200).json({
-        message: "se tomo la desicion de " + req.body.desicionA
-    });
-
-}else{
-    res.status(404).json({
-        message: "No se logro encontrar la partida"
-    });
-}
-
-});
 
 router.post("/seguirAccionEstado", (req, res, next) => {
 
