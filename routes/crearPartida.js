@@ -309,9 +309,9 @@ router.post("/accionEstado", (req, res, next) => {
                 e.carta.poder(partidas[req.body.codigo].jugadores, req.body.nombreABuscar, req.body.desicionA);
                 e.powerUsed = true;
                 if(req.body.desicionA == "salvar"){
-                e.powerUsedDescription = "haSalvado";
+                e.powerUsedDescription.push("haSalvado");
                 }else{
-                e.powerUsedDescription = "haDesmotivado"
+                e.powerUsedDescription.push("haDesmotivado");
                 }
             
             }

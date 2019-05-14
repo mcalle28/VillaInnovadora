@@ -22,6 +22,6 @@ module.exports = class Jugador {
        this.powerUsed = false;
        this.canVote = false; 
        this.carta = new Carta();
-       this.powerUsedDescription = "";
+       this.powerUsedDescription = [];
    }
 }
