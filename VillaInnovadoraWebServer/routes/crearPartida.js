@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 var express = require("express");
 var router = express();
 var Jugador = require("../classes/Jugador");
@@ -6,15 +6,10 @@ var Partida = require("../classes/Partida");
 var Evento = require("../classes/Evento");
 var PartidaSave = require("../modelsDB/partida");
 
-var gestPartida = require("../Middelware/gestionPartidas");
+var añadirPartida = require("../Middelware/añadirPartida");
 var gestPer = require("../Middelware/gestionPersonaje");
 
 var partidas = new Map();
-
-router.get("/", (req, res) => {
-    res.send("<h1>¡Server Villa Innovadora!</h1>");
-}
-)
 
 //Este metodo toma el codigo de una partida y la configura para el dia y la noche. 
 //Tambien pone la secuencia actual y se puede ver como una forma para iniciar la partida.
@@ -29,7 +24,8 @@ router.post("/configurarPartida", (req, res, next) => {
         if(partidas[_codigo].readyToConfig == true ){
         partidas[_codigo].secuenciaNoche= ["llamadoIndeciso", "accionIndeciso", "llamadoMentor","accionMentor", "postulacionCreaticidas", "votacionCreaticidas",
         "llamadoEstado", "accionEstado", "transicionADia"];
-        partidas[_codigo].secuenciaDia = ["postulacionJuicio", "votacionJuicio", "transicionANoche"];
+        partidas[_codigo].secuenciaDia = ["postulacionRepresentante", "votacionRepresentante" ,"postulacionJuicio", 
+        "votacionJuicio", "transicionANoche"];
         partidas[_codigo].secuenciaEventoEspecial = ["postulacionEventoEspecial", "votacionEventoEspecial","transicion"];
         partidas[_codigo].eventoSecuenciaActual = partidas[_codigo].eventoSecuenciaActual + 1;
         partidas[_codigo].estadoActual = partidas[_codigo].secuenciaNoche[partidas[_codigo].eventoSecuenciaActual];
@@ -102,6 +98,8 @@ router.post("/configurarPartida", (req, res, next) => {
 }
 
 });
+
+
 
 router.post("/conocerJugadoresCompleto", (req, res, next) => {
     var _jugadores = [];
@@ -216,39 +214,13 @@ router.post("/seguiAccionMentor", (req, res, next) => {
 
 });
 
-router.post("/postulacionCreaticidas", (req, res, next) => {
-    var _codigo = req.body.codigo;
-    var contCreat = 0;
-    var hanPostulado = 0;
-
-    partidas[_codigo].jugadores.forEach(e => {
-        if(e.carta.nombre == "Creaticida"){
-            contCreat = contCreat +1;
-        }
-        if(e.hasPostulated == true){
-            hanPostulado = hanPostulado + 1;
-        }
-    });
-
-    if(contCreat == hanPostulado){
-        partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
-        partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
-        res.status(200).json({
-            message: "Todos los creaticidas han postulado"
-        });
-    }else{
-        res.status(404).json({
-            message: "Todavia no han postulado todos los creaticidas"
-        });
-    }
-
-});
-
 //Este metodo verifica que los creaticidas hallan votado.
 router.post("/accionCreaticidas", (req, res, next) => {
     if(partidas[req.body.codigo] != undefined){
     var _contCreat = 0;
     var _conVotes = 0;
+    partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
+    partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
     partidas[req.body.codigo].jugadores.forEach(e => {
         if(e.carta.nombre == "Creaticida"){
             _contCreat = _contCreat + 1;
@@ -260,8 +232,6 @@ router.post("/accionCreaticidas", (req, res, next) => {
     });
 
     if(_conVotes == _contCreat){
-        partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
-        partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
         res.status(200).json({
             message: "Todos los creaticidas han votado",
             data: true
@@ -350,7 +320,6 @@ router.post("/seguirAccionEstado", (req, res, next) => {
     }
 
 });
-
 
 
 router.post("/postulacionRepresentante", (req, res ,next) => {
@@ -454,6 +423,8 @@ router.post("/postulacionJuicio", (req, res, next) => {
 router.post("/votacionJuicio", (req, res, next) => {
     if(partidas[req.body.codigo] != undefined){
         var _conVotes = 0;
+        partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
+        partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual]; 
         console.log("El estado actual es "+ partidas[req.body.codigo].estadoActual);
         partidas[req.body.codigo].jugadores.forEach(e => {
                 if(e.hasVoted == true){
@@ -463,8 +434,6 @@ router.post("/votacionJuicio", (req, res, next) => {
         });
     
         if(_conVotes == partidas[req.body.codigo].jugadores.length){
-            partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
-            partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual]; 
             res.status(200).json({
                 message: "Todos han participado en la votacion del juicio",
                 data: true
@@ -588,7 +557,7 @@ router.post("/seguirTransicionADia", (req, res, next) => {
             }
         });
 
-        if(_validateRep == true){
+        if(_validateRep != true){
             console.log("Se ha quitado de la secuencia la postulacion y votacion del representante");
             partidas[_codigo].secuenciaDia.splice(0,2);
         }else{
@@ -674,7 +643,7 @@ if(partidas[req.body.codigo] != undefined){
 });
 
 router.get("/codigoPartida", function(req, res){
-    var nuevoCodigo = gestPartida.añadirPartida(partidas);
+    var nuevoCodigo = añadirPartida.añadirPartida(partidas);
     var codigo = {
         codigo: nuevoCodigo
     };
@@ -939,7 +908,7 @@ router.post("/postularLista", (req, res, next) => {
 router.post("/postularPersona", (req, res, next) => {
     if(partidas[req.body.codigo] != undefined){
         var codigo = req.body.codigo;
-        partidas[codigo].votaciones.postularJugador(req.body.nombreAPostular, partidas, codigo, req.body.nombrePostulador);
+        partidas[codigo].votaciones.postularJugador(req.body.nombreAPostular, partidas, codigo);
         res.status(200).json({
             message: "Se envio la persona para postular"
         });
@@ -1053,15 +1022,12 @@ router.post("/conocerGanador", (req, res, next) => {
    }
 });
 
-
-
 //Se ponen todas las personas para que no puedan votar, se ponen los votos en contra en 0 y se reinicia la votacion de la partida.
 router.post("/finalizarVotacion", (req, res,next) => {
     partidas[req.body.codigo].jugadores.forEach(e =>{
         e.canVote = false;
         e.hasVote = false;
         e.beenPostulated = false;
-        e.hasPostulated = false;
         e.votesAgainst = 0;
     });
 
@@ -1122,7 +1088,7 @@ router.post("/finalizarPartida", (req, res,next) => {
         }else{
             _jugadoresToSave.push({
                 nombre: e.nombre
-            });
+                });
         }
         });
         var _partidaSave = new PartidaSave({
