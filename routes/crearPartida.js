@@ -1167,4 +1167,19 @@ router.post("/finalizarPartidaMostrar", (req, res,next) => {
  
 });
 
+//Metodo Solicitado para esperar por medio de accion
+router.post("/esperaJugador", (req, res, next) => {
+    if(req.body.shouldWait){
+        res.status(200).json({
+            message: "El personaje debe de esperar", 
+            data: "wait"
+        });
+    }else{
+        res.status(200).json({
+            message: "El jugador no debe esperar", 
+            data: "next"
+        });
+    }
+});
+
 module.exports = router;
