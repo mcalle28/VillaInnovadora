@@ -194,7 +194,7 @@ module.exports = class Carta{
                 //Depende del nombre si se salva a si mismo o si salva  a alguien mas.
                 if(element.nombre == _nombre && _desicionSafe == "salvar"){
                     element.vida = element.vida + 1;
-                }else if(_desicionSafe == "desmotivar"){
+                }else if(element.nombre == _nombre &&_desicionSafe == "desmotivar"){
                     element.vida = element.vida - 1;
                     if(element.vida <= 0){
                         element.estado = "Desmotivado";
