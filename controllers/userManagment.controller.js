@@ -10,10 +10,10 @@ exports.createUser = (req, res, next) => {
         hasVoted: false, 
         beenPostulated: false, 
         hasPostulated: false,
-        vida: 1
-        
+        vida: 1, 
+        estado: "vivo", 
+        votesAgainst: 0
     });
-
 
     jugador.save().then(result => {
         res.status(200).json({
@@ -41,7 +41,7 @@ exports.obtenerPersonaje = (req, res , next) => {
             let personaje = gestUser.conseguirPersonaje(fetchedUser, _nombreA);
               res.status(200).json({
                   message: "Se logro entronctrar el jugador", 
-                  rol: personaje.nombreCarta
+                  rol: personaje
               });
         }).catch(err => {
             res.status(404).json({
