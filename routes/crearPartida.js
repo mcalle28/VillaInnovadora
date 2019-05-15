@@ -535,28 +535,28 @@ router.post("/condicionParaGanarBasica", (req,res, next) => {
 });
 
 //Esta ruta al brindar el nombre de un jugador con un codigo devuelve la carta que este utiliza
-router.post("/obtenerPersonaje", (req,res, next) => {
-    var data;
-    var codigo = req.body.codigo;
-    var nombreABuscar = req.body.nombreA;
-    if(partidas[codigo] != undefined){
-    partidas[codigo].jugadores.forEach(e => {
-        if(e.nombre == nombreABuscar){
-            data = e.carta.nombre;
-        }
+// router.post("/obtenerPersonaje", (req,res, next) => {
+//     var data;
+//     var codigo = req.body.codigo;
+//     var nombreABuscar = req.body.nombreA;
+//     if(partidas[codigo] != undefined){
+//     partidas[codigo].jugadores.forEach(e => {
+//         if(e.nombre == nombreABuscar){
+//             data = e.carta.nombre;
+//         }
 
-    });
+//     });
 
-    res.status(200).json({
-        message:"Busqueda exitosa",
-        rol: data
-    });
-    }else{
-        res.status(404).json({
-            message: "No se encontro la partida, codigo usado: " + req.body.codigo.toString()
-        });
-    }
-});
+//     res.status(200).json({
+//         message:"Busqueda exitosa",
+//         rol: data
+//     });
+//     }else{
+//         res.status(404).json({
+//             message: "No se encontro la partida, codigo usado: " + req.body.codigo.toString()
+//         });
+//     }
+// });
 
 router.post("/postularLista", (req, res, next) => {
     if(partidas[req.body.codigo] != undefined){
