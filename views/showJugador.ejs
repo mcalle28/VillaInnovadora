@@ -1,0 +1,36 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Partida: <%= partida._id; %></h5>
+            <p class="card-text">Ganadores: <%= partida.ganadoresPartida; %></p>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Email</th>
+                <th scope="col">Semestre</th>
+                <th scope="col">Carrera</th>
+                <th scope="col">Carta</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% jugadores.forEach(function(jugador){%>
+            <tr>
+                <td><%= jugador.nombre; %></td>
+                <td><%= jugador.email; %></td>
+                <td><%= jugador.semestre; %></td>
+                <td><%= jugador.carrera; %></td>
+                <td><%= jugador.nombreCarta; %></td>
+            </tr>
+            <%});%>
+        </tbody>
+
+        <a class="btn btn-primary btn-lg mb-4 px-5 ml-5" href="/">Volver</a>
+</div>
+
+<% include ../partials/footer %>

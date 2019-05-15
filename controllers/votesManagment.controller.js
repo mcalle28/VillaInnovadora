@@ -104,7 +104,7 @@ exports.conocerGanador = (req, res, next ) => {
     let _codigo = req.body.codigo;
       partidaInGame.findOne({ codigo: _codigo })
         .then(match => {
-            Promise.all(match.votaciones.postulados.map(idJugador => {
+            Promise.all(match.jugadores.map(idJugador => {
                 return Jugador.findOne({_id: idJugador}).exec();
             })).then(fetchedUsers => {
                let dataSend = gestVotaciones.conocerGanador(fetchedUsers);
