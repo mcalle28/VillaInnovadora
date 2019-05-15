@@ -10,19 +10,7 @@ exports.createUser = (req, res, next) => {
         hasVoted: false, 
         beenPostulated: false, 
         hasPostulated: false,
-        vida: 1, 
-        estado: "vivo", 
-        votesAgainst: 0,
-        carrera: "",
-        semestre: 0,
-        motivacion: "",
-        pensamiento: "",
-        amplitud: "",
-        orientacion: "",
-        inteligencia: "",
-        innovacion: "", 
-        tiempoRespuesta: 0,
-        numeroPostulaciones: 0
+        vida: 1
         
     });
 
