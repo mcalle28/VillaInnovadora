@@ -11,6 +11,7 @@ router.post("/configurarPartida", confMatchController.configurarPartida);
 router.post("/unirsePartida", confMatchController.unirJugador);
 router.post("/asignarRol", confMatchController.asignarRol);
 router.post("/obtenerJugadores", confMatchController.obtenerJugadores);
+router.post("/conseguirEventoActua", confMatchController.conseguirEventoActual);
 
 
 

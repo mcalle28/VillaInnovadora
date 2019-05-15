@@ -192,3 +192,16 @@ exports.asignarRol = (req, res, next) => {
 exports.finalizarPartida = (req, res, next) => {
     //Aqui se debe de guardar la db como se desea en un schema diferente que no tenga los datos de las partidas, igualmente con los jugadores
 }
+
+exports.conseguirEventoActual = (req, res, next) => {
+    partidaInGame.findOne({codigo: req.body.codigo})
+    .then(match =>{
+        res.status(200).json({
+            message: "Se logro conseguir el evento", 
+            evento: match.estadoActual
+        })
+    })
+    .catch(err =>{
+        res.send(err);
+    })
+}

@@ -478,25 +478,25 @@ router.post("/seguirTransicionANoche", (req, res, next) => {
 });
 
 
-router.post("/conseguirEventoActual", (req, res, next) => {
+// router.post("/conseguirEventoActual", (req, res, next) => {
 
-if(partidas[req.body.codigo] != undefined){
+// if(partidas[req.body.codigo] != undefined){
 
-    res.status(200).json({
-        message: "Se devuelve el evento actual y el dia", 
-        evento : partidas[req.body.codigo].estadoActual,
-        dia: partidas[req.body.codigo].tiempo
-    });
+//     res.status(200).json({
+//         message: "Se devuelve el evento actual y el dia", 
+//         evento : partidas[req.body.codigo].estadoActual,
+//         dia: partidas[req.body.codigo].tiempo
+//     });
 
-}else{
-    res.status(404).json({
-        message: "No se encontro la partida"
-    });
-}
+// }else{
+//     res.status(404).json({
+//         message: "No se encontro la partida"
+//     });
+// }
 
 
 
-});
+// });
 
 router.post("/condicionParaGanarBasica", (req,res, next) => {
     var codigo = req.body.codigo;
