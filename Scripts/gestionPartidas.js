@@ -55,7 +55,7 @@ gestPartidas.configurarPartidas = function(partidas, tipoPartida){
     }else if(tipoPartida == 2){
         //Motivos de sustentacion
         try {
-            partidas.secuenciaNoche = ["llamadoIndeciso", "accionIndeciso","postulacionCreaticidas", "votacionCreaticidas", "transicionADia"];
+            partidas.secuenciaNoche = ["llamadoIndeciso", "accionIndeciso","votacionCreaticidas", "transicion"];
             partidas.secuenciaDia = ["postulacionRepresentante", "votacionRepresentante" ,"postulacionJuicio", 
             "votacionJuicio", "transicionANoche"];
             partidas.secuenciaEventoEspecial = ["postulacionEventoEspecial", "votacionEventoEspecial","transicion"];
