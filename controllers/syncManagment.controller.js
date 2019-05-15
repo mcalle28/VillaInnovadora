@@ -168,7 +168,7 @@ partidaInGame.findOne({ codigo: _codigo })
             .then(result => {
                 res.status(200).json({
                     message: "Todos los creaticidas han votado y se cambio el evento",
-                    data = true
+                    datos =  True
                 });
             })
             .catch(err => {
@@ -179,7 +179,7 @@ partidaInGame.findOne({ codigo: _codigo })
         }else{
             res.status(404).json({
                 message: "Todavia faltan creaticidas por postular",
-                data: false
+                datos: False
             });
         }
     
