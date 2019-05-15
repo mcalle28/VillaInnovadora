@@ -108,7 +108,7 @@ exports.conocerGanador = (req, res, next ) => {
                 return Jugador.findOne({_id: idJugador}).exec();
             })).then(fetchedUsers => {
                let dataSend = gestVotaciones.conocerGanador(fetchedUsers);
-                if(match.estadoActual == "votacionCreaticidas"){
+                if(match.estadoActual == "transicion"){
                 Jugador.findOneAndUpdate({email: dataSend.ganador.email}, { $inc: { "vida" : -1 } })
                 .then(result => {
                     res.status(200).json({
