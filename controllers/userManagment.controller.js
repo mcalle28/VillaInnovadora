@@ -36,6 +36,7 @@ exports.obtenerPersonaje = (req, res , next) => {
         Promise.all(match.jugadores.map(idJugador => {
             return Jugador.findOne({_id: idJugador, email: _nombreA}).exec();
         })).then(fetchedUser => {
+            console.log(fetchedUser);
               res.status(200).json({
                   message: "Se logro entronctrar el jugador", 
                   rol: fetchedUser.nombreCarta
