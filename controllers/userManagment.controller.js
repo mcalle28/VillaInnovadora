@@ -12,8 +12,20 @@ exports.createUser = (req, res, next) => {
         hasPostulated: false,
         vida: 1, 
         estado: "vivo", 
-        votesAgainst: 0
+        votesAgainst: 0,
+        carrera: "",
+        semestre: 0,
+        motivacion: "",
+        pensamiento: "",
+        amplitud: "",
+        orientacion: "",
+        inteligencia: "",
+        innovacion: "", 
+        tiempoRespuesta: 0,
+        numeroPostulaciones: 0
+        
     });
+
 
     jugador.save().then(result => {
         res.status(200).json({

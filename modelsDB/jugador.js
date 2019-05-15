@@ -29,7 +29,9 @@ var jugadorSchema = new mongoose.Schema({
         powerUsed: {type: Boolean, require: false},
         powerUsedDescription: {type: String, require: false},
         nombreCarta: {type: String, require: false},
-        descripcionCarta: {type: String, require: false}
+        descripcionCarta: {type: String, require: false},
+        tiempoRespuesta: {type: Number, require: false},
+        numeroPostulaciones: {type: numeroPostulaciones, require: false}
 });
 
 jugadorSchema.plugin(uniqueValidator);
