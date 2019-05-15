@@ -29,9 +29,23 @@ exports.createUser = (req, res, next) => {
 
 exports.obtenerPersonaje = (req, res , next) => {
     let _codigo = req.body.codigo;
+    let _nombreA = req.body.nombreA;
+
     partidaInGame.findOne({codigo: _codigo})
     .then(match =>{
-        
+        Promise.all(match.jugadores.map(idJugador => {
+            return Jugador.findOne({_id: idJugador, email: _nombreA}).exec();
+        })).then(fetchedUser => {
+              res.status(200).json({
+                  message: "Se logro entronctrar el jugador", 
+                  rol: fetchedUser.nombreCarta
+              });
+        }).catch(err => {
+            res.status(404).json({
+                message: "Problema al encontrar uno de los jugdores", 
+                error: err
+            });
+        });
     })
     .catch(err =>{
         res.status(404).json({
