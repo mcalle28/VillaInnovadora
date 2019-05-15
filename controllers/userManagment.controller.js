@@ -1,4 +1,5 @@
 const Jugador = require("../modelsDB/jugador");
+const partidaInGame = require("../modelsDB/partidaInGame");
 
 exports.createUser = (req, res, next) => {
     const jugador = new Jugador({
@@ -24,4 +25,19 @@ exports.createUser = (req, res, next) => {
             error: err
         });
     });
+}
+
+exports.obtenerPersonaje = (req, res , next) => {
+    let _codigo = req.body.codigo;
+    partidaInGame.findOne({codigo: _codigo})
+    .then(match =>{
+        
+    })
+    .catch(err =>{
+        res.status(404).json({
+            message: "No se logro encontrar la partida",
+            err: err
+        });
+    });
+
 }

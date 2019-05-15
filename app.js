@@ -17,8 +17,9 @@ mongoose.connect("mongodb+srv://webApi:IxjpYbyed6de8WrC@clustervillainnovadora-t
         console.log('Conectado a Base de Datos')
         //myFunc();
     })
-    .catch(() => {
+    .catch((error) => {
         console.log('Error al conectarse a Base de Datos')
+        console.log(error);
     });
 
 process.env.PORT = process.env.PORT || 8000;
