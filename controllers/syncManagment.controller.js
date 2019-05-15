@@ -229,7 +229,7 @@ exports.transicionADia = (req, res, next) => {
                 partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
                 .then(result => {
                     res.status(200).json({
-                        message: "El ganador es: " +  validator.ganador
+                        message: "Todavia no se encuentra ganador se sigue la partida "
                     });
                 })
                 .catch(err => {
