@@ -2,16 +2,37 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const router = express();
 const confMatchController = require("../controllers/configuracionPartida.controller");
+const syncManagment = require("../controllers/syncManagment.controller");
 
+
+/**
+ * Este archivo se hace con el proposito de exponer las rutas de la API para la configuracion de una partida, esto incluye el inicio, ejecucion y finalizacion
+ * de esta.
+ * 
+ * Tambien este archivo permite utilizar middleware  para una ruta si se quieren hacer modificaciones al request que llega a esta ruta y poder verificar o
+ * normalizar datos para el correcto funcionamiento de la db.
+ * 
+ * Para esto se usa "router.<typeRequest>.(<"nameOfRoute">, <"middleware1">, <"middleware2">, ... , <"controlador">);"
+ * donde middleware1, tomara el request y podra verificar ciertos campos y mandar un error si no se cumple con lo deseado.
+ * 
+ * Para encontrar los diferentes controladores y middleware que se pueden utilizar, usar los archivos de las carpetas /controllers & /Middleware
+ */
+
+
+//Gestion de configuracion
 router.get("/codigoPartida", confMatchController.crearPartida);
-
-//Este metodo toma el codigo de una partida y la configura para el dia y la noche. 
-//Tambien pone la secuencia actual y se puede ver como una forma para iniciar la partida.
 router.post("/configurarPartida", confMatchController.configurarPartida);
 router.post("/unirsePartida", confMatchController.unirJugador);
 router.post("/asignarRol", confMatchController.asignarRol);
 router.post("/obtenerJugadores", confMatchController.obtenerJugadores);
 router.post("/conseguirEventoActual", confMatchController.conseguirEventoActual);
+
+//Gestion de ejecucion
+router.post("/accionIndeciso", syncManagment.accionIndeciso);
+router.post("/seguirAccionIndeciso", syncManagment.seguirAccionIndeciso);
+router.post("/postulacionCreaticidas", syncManagment.postulacionCreaticidas);
+router.post("/accionCreaticidas", syncManagment.votacionCreaticidas);
+router.post("/seguirTransicionADia", syncManagment.transicionADia);
 
 
 

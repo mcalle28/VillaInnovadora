@@ -1,6 +1,11 @@
 const gestPartidas = {};
 const Partida = require("../modelsDB/partidaInGame");
 
+/**
+ * Este archivo tiene el proposito de ayudar a la partida a poder empezar y finalizar correctamente.
+ */
+
+
 //Para lo que retorna este metodo se usa, 0 = se creo partida basica, 1 = se ecreo partida avanzada, 2= se creo partida personalizada,
 // 3 = tipo de partida no adecuado, -1 = no se puede configurar
 gestPartidas.configurarPartidas = function(partidas, tipoPartida){

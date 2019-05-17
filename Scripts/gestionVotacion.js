@@ -1,5 +1,9 @@
 const gestVotacion = {};
 
+/**
+ * Este archivo se hace con el proposito de ayudar al controlador de votaciones, con el proposito de gestionar algunos aspecos operacionales internos.
+ */
+
 gestVotacion.conocerGanador = function(jugadores){
     let conVotos = 0;
     let ganador = "";

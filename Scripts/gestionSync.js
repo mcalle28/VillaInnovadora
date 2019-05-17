@@ -1,5 +1,9 @@
 const gestSync = {};
 
+/**
+ * Este archivo tiene como objetivo ayudar a la ejecucion de la partida, donde diferentes tipos de informacion se pueden necesitar.
+ */
+
 gestSync.existeIndeciso = function(jugadores){
 let validation = false;
 jugadores.forEach(element => {

@@ -5,7 +5,6 @@ var express = require("express"),
     confMatchRoute = require("./routes/rutasConfiguracionPartida"),
     userManagmentRoute = require("./routes/rutasUserManagment"),
     votesManagmentRoute = require("./routes/rutasVotesManagment"),
-    syncManagmentRoute = require("./routes/rutasSyncManagment"),
     app = express();
     
 
@@ -33,11 +32,8 @@ app.use(crearRoute);
 app.use(confMatchRoute);
 app.use(userManagmentRoute);
 app.use(votesManagmentRoute);
-app.use(syncManagmentRoute);
 
 
-//app.use(unirsePartida);
-//app.use(obtenerJugadores);
 app.listen(process.env.PORT, () => {
 });
 

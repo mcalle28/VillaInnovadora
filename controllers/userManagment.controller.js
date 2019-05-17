@@ -2,6 +2,11 @@ const Jugador = require("../modelsDB/jugador");
 const partidaInGame = require("../modelsDB/partidaInGame");
 const gestUser = require("../Scripts/gestionUser");
 
+/**
+ * Crea un jugador y lo guarda en mongo atlas, donde se busca que el email sea unico.
+ * Input: nombre, email 
+ * Output: message:(exito o error), error(solo si falla, info sobre el error), res(resultado de guardar en la base de datos) 
+ */
 exports.createUser = (req, res, next) => {
     const jugador = new Jugador({
         nombre: req.body.nombre, 
@@ -28,6 +33,11 @@ exports.createUser = (req, res, next) => {
     });
 }
 
+/**
+ * Busca en la partida los jugadors, consigue los jugadores de la db y busca por email para devolver el rol de esta persona.
+ * Input: nombre, email 
+ * Output: message:(exito o error), error(solo si falla, info sobre el error), res(resultado de guardar en la base de datos) 
+ */
 exports.obtenerPersonaje = (req, res , next) => {
     let _codigo = req.body.codigo;
     let _nombreA = req.body.nombreA;

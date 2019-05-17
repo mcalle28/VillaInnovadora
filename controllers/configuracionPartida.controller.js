@@ -3,6 +3,17 @@ const Jugador = require("../modelsDB/jugador");
 const gestPartidas = require("../Scripts/gestionPartidas");
 const gestCartas = require("../Scripts/gestionCartas");
 
+/**
+ * Este archivo se hace con el proposito de gestionar el manejo de los request hechos para configurar la partida, donde se gestiona el inicio y finalizacion 
+ * de esta.
+ */
+
+
+/**
+ * Crea una partida en la base de datos.
+ * Input: ----, 
+ * Output: message(mensaje de exito o error), nuevoCodigo(solo aparece en exito), debug(Informacion sobre el resultado al guardar en la db)
+ */
 exports.crearPartida = (req, res, next ) => {
 
     let nuevoCodigo = gestPartidas.generarCodigo();
@@ -34,7 +45,8 @@ exports.crearPartida = (req, res, next ) => {
             });
         }).catch(err => {
             res.status(404).json({
-                message:"Hubo un problema al almacenar la partida, trata de nuevo"
+                message:"Hubo un problema al almacenar la partida, trata de nuevo", 
+                debug: err
             });
         }); 
     }
@@ -46,6 +58,11 @@ exports.crearPartida = (req, res, next ) => {
     });
 }
 
+/**
+ * Configura las secuencias de noche, dia, tiempo, evento partida, 
+ * Input: codigo, tipoPartida (0 basica, 1 avanzada, 2 propositos sustentacion o personalizada)
+ * Output: message:(exito o error), result(solo si exito, info sobre el resultado al guardar en la db), error(solo si falla, info sobre el error)
+ */
 exports.configurarPartida = (req, res, next) => {
     let _codigo = req.body.codigo;
     let _tipoPartida = req.body.tipoPartida;
@@ -75,6 +92,11 @@ exports.configurarPartida = (req, res, next) => {
         });
   }
 
+/**
+ * Busca la partida, busca a el jugador (se debio crear previamente), lo une a la lista de jugadores de la partida con el ID que tiene en la db.
+ * Input: codigo, email(email del jugador).
+ * Output: message:(exito o error), result(solo si exito, info sobre el resultado al guardar en la db), error(solo si falla, info sobre el error)
+ */
 exports.unirJugador = (req, res, next) => {
     let _codigo = req.body.codigo;
     let _emailJugador = req.body.email;
@@ -98,13 +120,14 @@ exports.unirJugador = (req, res, next) => {
                 });
             }else{
                 res.status(404).json({
-                    message: "No se logro encontrar el jugador para unirse a la partida"
+                    message: "No se logro encontrar el jugador para unirse a la partida", 
+                    error: ""
                 });
             }
             }).catch(err => {
                 res.status(404).json({
                     message: "Hubo un problema al encontrar al jugador", 
-                    err: err
+                    error: err
                 });
             });
 
@@ -116,10 +139,13 @@ exports.unirJugador = (req, res, next) => {
         });
   }
 
-//Devuelve todos los jugadores
+/**
+ * Busca una partida y devuelve todos los jugadores que estan en la lista.
+ * Input: codigo
+ * Output: message:(exito o error), jugadores(solo si exito, array con jugadores), error(solo si falla, info sobre el error)
+ */
 exports.obtenerJugadores = (req, res, next) => {
 let _codigo = req.body.codigo;
-let _tipoPartida = req.body.tipoPartida;
 
 partidaInGame.findOne({codigo: _codigo})
 .then(match => {
@@ -147,6 +173,11 @@ res.status(404).json({
 });
 }
 
+/**
+ * Busca una partida, coge la lista de jugadores los mapea por id y modifica en la coleccion de estos el nombreCarta y descripcionCarta.
+ * Input: codigo, tipoPartida(0: basica, 1:avanzada, 2:personalizada)
+ * Output: message:(exito o error), users(solo si exito, array con jugadores actualizados con roles), error(solo si falla, info sobre el error)
+ */
 exports.asignarRol = (req, res, next) => {
     let _codigo = req.body.codigo;
     let _tipoPartida = req.body.tipoPartida;
@@ -189,10 +220,20 @@ exports.asignarRol = (req, res, next) => {
         });
 }
 
+/**
+ * Busca una partida y crea en la db una nueva coleccion que guarde la partida sin los datos usados para la sincronizacion de la ejecucion.
+ * Input: (Falta implementar)
+ * Output: (Falta implementar)
+ */
 exports.finalizarPartida = (req, res, next) => {
     //Aqui se debe de guardar la db como se desea en un schema diferente que no tenga los datos de las partidas, igualmente con los jugadores
 }
 
+/**
+ * Busca una partida y retora el estadoActual de esta
+ * Input: codigo
+ * Output: message:(exito o error), evento(string con el evento actual), error(solo si falla, info sobre el error)
+ */
 exports.conseguirEventoActual = (req, res, next) => {
     partidaInGame.findOne({codigo: req.body.codigo})
     .then(match =>{
@@ -202,6 +243,9 @@ exports.conseguirEventoActual = (req, res, next) => {
         })
     })
     .catch(err =>{
-        res.send(err);
+        res.status(200).json({
+            message: "Error al encontrar la partida", 
+            error: err
+        })
     })
 }

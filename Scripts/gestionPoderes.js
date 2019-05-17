@@ -1,5 +1,9 @@
 const gestPoderes = {}
 
+/**
+ * Este archivo tiene como objetivo poder hacer uso de los poderes de cada personaje dentro de la partida.
+ */
+
 gestPoderes.poderIndeciso = function(jugadores, desicion){
 
 let indeciso;

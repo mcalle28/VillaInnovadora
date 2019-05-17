@@ -3,6 +3,14 @@ const gestSync = require("../Scripts/gestionSync");
 const gestPoderes = require("../Scripts/gestionPoderes");
 const Jugador = require("../modelsDB/jugador");
 
+/**
+ * Busca una partida y utiliza un script sobre el arreglo de jugadores para encontrar si esta el indeciso, donde al encontrarlo le asigna el rol dependiendo de
+ * la desicion
+ * Input: codigo, desicion("Creaticida" else emprendedor(solo reconoce string "Creaticida")).  
+ * Output: message:(exito o error), error(solo si falla, info sobre el error)
+ * 
+ * Notas: Deberia utilizar el email para buscar al jugador dentro de la partida y verificar si este esta dentro de esta, ademas de si es el indeciso.
+ */
 exports.accionIndeciso = (req, res, next) => {
 
 let _codigo = req.body.codigo;
@@ -54,6 +62,13 @@ partidaInGame.findOne({ codigo: _codigo })
 
 }
 
+/**
+ * Busca una partida, obtiene los jugadores (solo esta el id), los busca en la db y con un script encuentra si en los jugadores esta el indeciso, si esta
+ * pasa evento sino solo se envia un mensaje hasta que se encuentre el indeciso.
+ * 
+ * Input: codigo  
+ * Output: message:(exito o error), error(solo si falla, info sobre el error), //El server cambia de evento si no existe un indeciso en la partida.
+ */
 exports.seguirAccionIndeciso = (req, res, next) => {
   
 let _codigo = req.body.codigo;
@@ -82,7 +97,7 @@ partidaInGame.findOne({ codigo: _codigo })
                 });
             });    
         }else{
-            res.status(404).json({
+            res.status(200).json({
                 message: "Todavia existe un emprendedor indeciso en la partida"
             });
         }
@@ -104,6 +119,13 @@ partidaInGame.findOne({ codigo: _codigo })
 
 }
 
+/**
+ * Busca una partida, obtiene los jugadores (solo esta el id), los busca en la db y con un script encuentra si en los jugadores creaticidas han postulado 
+ * en la votacion, donde de ser verdadero se cambia de evento y de ser falso solo se envia un mensaje.
+ * 
+ * Input: codigo  
+ * Output: message:(exito o error), error(solo si falla, info sobre el error), //El server cambia de evento si no creaticidas han postulado en la partida.
+ */
 exports.postulacionCreaticidas = (req, res, next) => {
     let _codigo = req.body.codigo;
 
@@ -126,11 +148,12 @@ partidaInGame.findOne({ codigo: _codigo })
             })
             .catch(err => {
                 res.status(404).json({
-                    message: "Hubo un problema al actualizar la partida"
+                    message: "Hubo un problema al actualizar la partida", 
+                    error: err
                 });
             });    
         }else{
-            res.status(404).json({
+            res.status(200).json({
                 message: "Todavia faltan creaticidas por postular"
             });
         }
@@ -150,6 +173,13 @@ partidaInGame.findOne({ codigo: _codigo })
 });
 }
 
+
+/**
+ * Busca una partida, obtiene los jugadores (solo esta el id), los busca en la db y con un script encuentra si los jugadores creaticidas han votado, si es verdad
+ * se cambia el evento de la partida, sino se envia solo mensaje.
+ * Input: codigo  
+ * Output: message:(exito o error), error(solo si falla, info sobre el error), //El server cambia de evento si creaticidas han votado en la partida.
+ */
 exports.votacionCreaticidas = (req, res, next) => {
 let _codigo = req.body.codigo;
 
@@ -168,7 +198,6 @@ partidaInGame.findOne({ codigo: _codigo })
             .then(result => {
                 res.status(200).json({
                     message: "Todos los creaticidas han votado y se cambio el evento",
-                    datos : true
                 });
             })
             .catch(err => {
@@ -177,9 +206,8 @@ partidaInGame.findOne({ codigo: _codigo })
                 });
             });    
         }else{
-            res.status(404).json({
+            res.status(200).json({
                 message: "Todavia faltan creaticidas por postular",
-                datos: false
             });
         }
     
@@ -198,6 +226,14 @@ partidaInGame.findOne({ codigo: _codigo })
 });
 }
 
+
+/**
+ * Busca la partida y obtiene los jugadores , cuando el primer equipo llegue a 0 vidas en sus jugadores (creaticidas o emprendedores) se le condedera la victoria
+ * al otro equipo.
+ * Input: codigo  
+ * Output: message:(exito o error), error(solo si falla, info sobre el error), //El server cambia de evento si ningun equipo ha llegado a que todos sus jugadores
+ * tengan 0 vidas. de lo contrario finaliza y se cambia el estado a "partida finalizada".
+ */
 exports.transicionADia = (req, res, next) => {
     let _codigo = req.body.codigo;
     
@@ -234,7 +270,8 @@ exports.transicionADia = (req, res, next) => {
                 })
                 .catch(err => {
                     res.status(404).json({
-                        message: "Hubo un problema al actualizar la partida"
+                        message: "Hubo un problema al actualizar la partida",
+                        error: err
                     });
                 });    
             }

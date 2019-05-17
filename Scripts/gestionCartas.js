@@ -1,6 +1,10 @@
 const gestCartas = {};
 const Jugador = require("../modelsDB/jugador");
 
+/**
+ * Este gestor permite asignar roles y crear diferentes tipos de cartas.
+ */
+
 gestCartas.asignarRol = function(jugadores, tipoPartida){
     let listaJugadores = [];
 
