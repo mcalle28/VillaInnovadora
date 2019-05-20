@@ -10,14 +10,20 @@ const gestUser = require("../Scripts/gestionUser");
 exports.createUser = (req, res, next) => {
     const jugador = new Jugador({
         nombre: req.body.nombre, 
-        email: req.body.email, 
-        powerUsed: false, 
-        hasVoted: false, 
-        beenPostulated: false, 
-        hasPostulated: false,
-        vida: 1, 
-        estado: "vivo", 
-        votesAgainst: 0
+        apellido: req.body.apellido,
+        sexo: req.body.sexo,
+        edad: req.body.edad,
+        email: req.body.email,
+        carrera: req.body.carrera,
+        semestre: req.body.semestre,
+        motivacion: req.body.motivacion,
+        pensamiento: req.body.pensamiento,
+        amplitud: req.body.amplitud,
+        orientacion: req.body.orientacion,
+        inteligencia: req.body.inteligencia,
+        innovacion: req.body.innovacion,
+        tiempoRespuesta: req.body.tiempoRespuesta,
+
     });
 
     jugador.save().then(result => {
@@ -44,21 +50,12 @@ exports.obtenerPersonaje = (req, res , next) => {
 
     partidaInGame.findOne({codigo: _codigo})
     .then(match =>{
-        Promise.all(match.jugadores.map(idJugador => {
-            return Jugador.findOne({_id: idJugador}).exec();
-        })).then(fetchedUser => {
-            console.log(fetchedUser);
-            let personaje = gestUser.conseguirPersonaje(fetchedUser, _nombreA);
-              res.status(200).json({
-                  message: "Se logro entronctrar el jugador", 
-                  rol: personaje
-              });
-        }).catch(err => {
-            res.status(404).json({
-                message: "Problema al encontrar uno de los jugdores", 
-                error: err
-            });
-        });
+        console.log(match.jugadores);
+        let personaje = gestUser.conseguirPersonaje(match.jugadores, _nombreA);
+          res.status(200).json({
+              message: "Se logro entronctrar el jugador", 
+              rol: personaje
+          });
     })
     .catch(err =>{
         res.status(404).json({

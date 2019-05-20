@@ -28,6 +28,9 @@ exports.crearPartida = (req, res, next ) => {
             codigo: nuevoCodigo, 
             tipoPartida: -1, 
             estadoActual: "configurando...",
+            temaEventoEspecial: "notSet",
+            tituloEventoEspecial:"notSet",
+            ganadoresPartida:"no hay ganadores todavia",
             eventoSecuenciaActual: -1, 
             votaciones: {
                 postulados: [],
@@ -93,7 +96,7 @@ exports.configurarPartida = (req, res, next) => {
   }
 
 /**
- * Busca la partida, busca a el jugador (se debio crear previamente), lo une a la lista de jugadores de la partida con el ID que tiene en la db.
+ * Busca la partida, busca a el jugador (se debio crear previamente), lo almacena en jugadores dentro de partida.
  * Input: codigo, email(email del jugador).
  * Output: message:(exito o error), result(solo si exito, info sobre el resultado al guardar en la db), error(solo si falla, info sobre el error)
  */
@@ -106,7 +109,23 @@ exports.unirJugador = (req, res, next) => {
             Jugador.findOne({ email: _emailJugador})
             .then(user => {
                 if(user != undefined){
-                match.jugadores.push(user);
+                let userPush = {
+                    nombre: user.nombre, 
+                    email: user.email,
+                    vida: 1, 
+                    protected: false, 
+                    beenPostulated: false, 
+                    hasPostulated: false, 
+                    idea: "none",
+                    postuloIdeaJuicio: false, 
+                    votesAgainst: 0, 
+                    hasVoted: false, 
+                    powerUsed: false, 
+                    powerUsedDescription: false,
+                    nombreCarta: "noSet", 
+                    descripcionCarta: "noSet"
+                };
+                match.jugadores.push(userPush);
                 partidaInGame.findOneAndUpdate({codigo: _codigo}, match).then(result => {
                     res.status(200).json({
                         message:"Se logro añadir jugador a la partida", 
@@ -150,19 +169,17 @@ let _codigo = req.body.codigo;
 partidaInGame.findOne({codigo: _codigo})
 .then(match => {
 
-    Promise.all(match.jugadores.map(idJugador => {
-        return Jugador.findOne({_id: idJugador}).exec();
-    })).then(fetchedUsers => {
-            res.status(200).json({
-                message: "Se encontraron los jugadores", 
-                jugadores: fetchedUsers
-            });
-    }).catch(err => {
+    try {
+        res.status(200).json({
+            message: "Se encontraron los jugadores", 
+            jugadores: match.jugadores
+        });
+    } catch (err) {
         res.status(404).json({
-            message: "Problema al encontrar uno de los jugdores", 
+            message: "No se lograron encontrar los jugadores", 
             error: err
         });
-    });
+    }
 
 })
 .catch(err => {
@@ -174,7 +191,7 @@ res.status(404).json({
 }
 
 /**
- * Busca una partida, coge la lista de jugadores los mapea por id y modifica en la coleccion de estos el nombreCarta y descripcionCarta.
+ * Busca una partida, coge la lista de jugadores  y modifica en la coleccion de estos el nombreCarta y descripcionCarta.
  * Input: codigo, tipoPartida(0: basica, 1:avanzada, 2:personalizada)
  * Output: message:(exito o error), users(solo si exito, array con jugadores actualizados con roles), error(solo si falla, info sobre el error)
  */
@@ -183,33 +200,22 @@ exports.asignarRol = (req, res, next) => {
     let _tipoPartida = req.body.tipoPartida;
       partidaInGame.findOne({ codigo: _codigo })
         .then(match => {
+            gestCartas.asignarRol(match.jugadores, _tipoPartida);
 
             Promise.all(match.jugadores.map(idJugador => {
-                return Jugador.findOne({_id: idJugador}).exec();
-            })).then(fetchedUsers => {
-                gestCartas.asignarRol(fetchedUsers, _tipoPartida);
-
-                Promise.all(fetchedUsers.map(idJugador => {
-                    return Jugador.findOneAndUpdate({email: idJugador.email},idJugador).exec();
-                })).then(result => {
-                        console.log(result);
-                }).catch(err => {
-                    res.status(404).json({
-                        message: "Problema al encontrar uno de los jugdores", 
-                        error: err
-                    });
-                });
-
-                res.status(200).json({
-                    message: "Se lograron actualizar todos los jugadores",
-                    users: fetchedUsers
-                });
-
+                return Jugador.findOneAndUpdate({email: idJugador.email},idJugador).exec();
+            })).then(result => {
+                    console.log(result);
             }).catch(err => {
                 res.status(404).json({
                     message: "Problema al encontrar uno de los jugdores", 
                     error: err
                 });
+            });
+
+            res.status(200).json({
+                message: "Se lograron actualizar todos los jugadores",
+                users: fetchedUsers
             });
 
         }).catch(err => {

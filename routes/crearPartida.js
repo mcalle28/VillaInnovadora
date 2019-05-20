@@ -5,7 +5,6 @@ var Jugador = require("../classes/Jugador");
 var Partida = require("../classes/Partida");
 var Evento = require("../classes/Evento");
 var PartidaSave = require("../modelsDB/partidaInGame");
-var gestPer = require("../Middelware/gestionPersonaje");
 
 var partidas = new Map();
 

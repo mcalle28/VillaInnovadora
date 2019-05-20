@@ -19,36 +19,28 @@ let _desicion = req.body.desicion;
 partidaInGame.findOne({ codigo: _codigo })
 .then(match => {
 
-    Promise.all(match.jugadores.map(idJugador => {
-        return Jugador.findOne({_id: idJugador}).exec();
-    })).then(fetchedUsers => {
-        let indeciso = gestPoderes.poderIndeciso(fetchedUsers, _desicion);
-        Jugador.findOneAndUpdate({email: indeciso.email}, indeciso)
+    let indeciso = gestPoderes.poderIndeciso(match.jugadores, _desicion);
+    Jugador.findOneAndUpdate({email: indeciso.email}, indeciso)
+    .then(result => {
+        match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+        match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+        partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
         .then(result => {
-            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
-            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
-            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
-            .then(result => {
-                res.status(200).json({
-                    message: "Se logro actualizar el jugador y la partida con el siguiente evento"
-                });
-            })
-            .catch(err => {
-                res.status(404).json({
-                    message: "Hubo un problema al actualizar la partida"
-                });
+            res.status(200).json({
+                message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
+                resultDb: result
             });
         })
         .catch(err => {
             res.status(404).json({
-                message:"Error al actualizar indeciso", 
+                message: "Hubo un problema al actualizar la partida", 
                 error: err
             });
         });
-    
-    }).catch(err => {
+    })
+    .catch(err => {
         res.status(404).json({
-            message: "Problema al encontrar uno de los jugdores", 
+            message:"Error al actualizar indeciso", 
             error: err
         });
     });
@@ -63,7 +55,7 @@ partidaInGame.findOne({ codigo: _codigo })
 }
 
 /**
- * Busca una partida, obtiene los jugadores (solo esta el id), los busca en la db y con un script encuentra si en los jugadores esta el indeciso, si esta
+ * Busca una partida, obtiene los jugadores  y con un script encuentra si en los jugadores esta el indeciso, si esta
  * pasa evento sino solo se envia un mensaje hasta que se encuentre el indeciso.
  * 
  * Input: codigo  
@@ -75,41 +67,28 @@ let _codigo = req.body.codigo;
 
 partidaInGame.findOne({ codigo: _codigo })
 .then(match => {
+    let validation = gestSync.existeIndeciso(match.jugadores);
 
-    Promise.all(match.jugadores.map(idJugador => {
-        return Jugador.findOne({_id: idJugador}).exec();
-    })).then(fetchedUsers => {
-       
-        let validation = gestSync.existeIndeciso(fetchedUsers);
-
-        if(!validation){
-            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
-            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
-            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
-            .then(result => {
-                res.status(200).json({
-                    message: "Se logro actualizar la partida con el siguiente evento"
-                });
-            })
-            .catch(err => {
-                res.status(404).json({
-                    message: "Hubo un problema al actualizar la partida"
-                });
-            });    
-        }else{
+    if(!validation){
+        match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+        match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+        partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+        .then(result => {
             res.status(200).json({
-                message: "Todavia existe un emprendedor indeciso en la partida"
+                message: "Se logro actualizar la partida con el siguiente evento", 
+                resultDb: result
             });
-        }
-
-    
-    }).catch(err => {
-        res.status(404).json({
-            message: "Problema al encontrar uno de los jugdores", 
-            error: err
+        })
+        .catch(err => {
+            res.status(404).json({
+                message: "Hubo un problema al actualizar la partida"
+            });
+        });    
+    }else{
+        res.status(200).json({
+            message: "Todavia existe un emprendedor indeciso en la partida"
         });
-    });
-
+    }
 }).catch(err => {
   res.status(404).json({
     message: "Hubo un error al encontrar la partida", 
@@ -120,7 +99,7 @@ partidaInGame.findOne({ codigo: _codigo })
 }
 
 /**
- * Busca una partida, obtiene los jugadores (solo esta el id), los busca en la db y con un script encuentra si en los jugadores creaticidas han postulado 
+ * Busca una partida, obtiene los jugadores  y con un script encuentra si en los jugadores creaticidas han postulado 
  * en la votacion, donde de ser verdadero se cambia de evento y de ser falso solo se envia un mensaje.
  * 
  * Input: codigo  
@@ -131,40 +110,27 @@ exports.postulacionCreaticidas = (req, res, next) => {
 
 partidaInGame.findOne({ codigo: _codigo })
 .then(match => {
-
-    Promise.all(match.jugadores.map(idJugador => {
-        return Jugador.findOne({_id: idJugador}).exec();
-    })).then(fetchedUsers => {
-       
-        let validation = gestSync.creaticidasHanPostulado(fetchedUsers);
-        if(validation){
-            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
-            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
-            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
-            .then(result => {
-                res.status(200).json({
-                    message: "Todos los creaticidas han votado y se cambio el evento"
-                });
-            })
-            .catch(err => {
-                res.status(404).json({
-                    message: "Hubo un problema al actualizar la partida", 
-                    error: err
-                });
-            });    
-        }else{
+    let validation = gestSync.creaticidasHanPostulado(match.jugadores);
+    if(validation){
+        match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+        match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+        partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+        .then(result => {
             res.status(200).json({
-                message: "Todavia faltan creaticidas por postular"
+                message: "Todos los creaticidas han votado y se cambio el evento"
             });
-        }
-    
-    }).catch(err => {
-        res.status(404).json({
-            message: "Problema al encontrar uno de los jugdores", 
-            error: err
+        })
+        .catch(err => {
+            res.status(404).json({
+                message: "Hubo un problema al actualizar la partida", 
+                error: err
+            });
+        });    
+    }else{
+        res.status(200).json({
+            message: "Todavia faltan creaticidas por postular"
         });
-    });
-
+    }
 }).catch(err => {
   res.status(404).json({
     message: "Hubo un error al encontrar la partida", 
@@ -175,7 +141,7 @@ partidaInGame.findOne({ codigo: _codigo })
 
 
 /**
- * Busca una partida, obtiene los jugadores (solo esta el id), los busca en la db y con un script encuentra si los jugadores creaticidas han votado, si es verdad
+ * Busca una partida, obtiene los jugadores y con un script encuentra si los jugadores creaticidas han votado, si es verdad
  * se cambia el evento de la partida, sino se envia solo mensaje.
  * Input: codigo  
  * Output: message:(exito o error), error(solo si falla, info sobre el error), //El server cambia de evento si creaticidas han votado en la partida.
@@ -185,39 +151,28 @@ let _codigo = req.body.codigo;
 
 partidaInGame.findOne({ codigo: _codigo })
 .then(match => {
-
-    Promise.all(match.jugadores.map(idJugador => {
-        return Jugador.findOne({_id: idJugador}).exec();
-    })).then(fetchedUsers => {
-       
-        let validation = gestSync.creaticidasHanVotado(fetchedUsers);
-        if(validation){
-            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
-            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
-            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
-            .then(result => {
-                res.status(200).json({
-                    message: "Todos los creaticidas han votado y se cambio el evento",
-                });
-            })
-            .catch(err => {
-                res.status(404).json({
-                    message: "Hubo un problema al actualizar la partida"
-                });
-            });    
-        }else{
+    let validation = gestSync.creaticidasHanVotado(match.jugadores);
+    if(validation){
+        match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+        match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+        partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+        .then(result => {
             res.status(200).json({
-                message: "Todavia faltan creaticidas por postular",
+                message: "Todos los creaticidas han votado y se cambio el evento",
+                resultDb: result
             });
-        }
-    
-    }).catch(err => {
-        res.status(404).json({
-            message: "Problema al encontrar uno de los jugdores", 
-            error: err
+        })
+        .catch(err => {
+            res.status(404).json({
+                message: "Hubo un problema al actualizar la partida", 
+                error: err
+            });
+        });    
+    }else{
+        res.status(200).json({
+            message: "Todavia faltan creaticidas por postular",
         });
-    });
-
+    }
 }).catch(err => {
   res.status(404).json({
     message: "Hubo un error al encontrar la partida", 
@@ -239,50 +194,41 @@ exports.transicionADia = (req, res, next) => {
     
     partidaInGame.findOne({ codigo: _codigo })
     .then(match => {
-    
-        Promise.all(match.jugadores.map(idJugador => {
-            return Jugador.findOne({_id: idJugador}).exec();
-        })).then(fetchedUsers => {
-
-            let validator = gestSync.condicionesParaGanar(fetchedUsers);
-            if(validator.pass == true){
-                match.eventoSecuenciaActual = -1;
-                match.estadoActual = "Partida finalizada";
-                partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
-                .then(result => {
-                    res.status(200).json({
-                        message: "El ganador es: " +  validator.ganador
-                    });
-                })
-                .catch(err => {
-                    res.status(404).json({
-                        message: "Hubo un problema al actualizar la partida"
-                    });
-                });    
-            }else{
-                match.eventoSecuenciaActual = 0;
-                match.estadoActual = match.secuenciaDia[match.eventoSecuenciaActual];
-                partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
-                .then(result => {
-                    res.status(200).json({
-                        message: "Todavia no se encuentra ganador se sigue la partida "
-                    });
-                })
-                .catch(err => {
-                    res.status(404).json({
-                        message: "Hubo un problema al actualizar la partida",
-                        error: err
-                    });
-                });    
-            }
-
-        }).catch(err => {
-            res.status(404).json({
-                message: "Problema al encontrar uno de los jugdores", 
-                error: err
-            });
-        });
-    
+        //Este validator (onSucces) devuelve {ganador: String, empate: Boolean, jugadoresEmpatados: Array<JugadoresPartidaInGame
+        let validator = gestSync.condicionesParaGanar(match.jugadores);
+        if(validator.pass == true){
+            match.eventoSecuenciaActual = -1;
+            match.estadoActual = "Partida finalizada";
+            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+            .then(result => {
+                res.status(200).json({
+                    message: "El ganador es: " +  validator.ganador, 
+                    resultDb: result
+                });
+            })
+            .catch(err => {
+                res.status(404).json({
+                    message: "Hubo un problema al actualizar la partida", 
+                    error: err
+                });
+            });    
+        }else{
+            match.eventoSecuenciaActual = 0;
+            match.estadoActual = match.secuenciaDia[match.eventoSecuenciaActual];
+            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+            .then(result => {
+                res.status(200).json({
+                    message: "Todavia no se encuentra ganador se sigue la partida ", 
+                    resultDb: result
+                });
+            })
+            .catch(err => {
+                res.status(404).json({
+                    message: "Hubo un problema al actualizar la partida",
+                    error: err
+                });
+            });    
+        }
     }).catch(err => {
       res.status(404).json({
         message: "Hubo un error al encontrar la partida", 
