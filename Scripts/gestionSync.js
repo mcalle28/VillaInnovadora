@@ -62,27 +62,37 @@ gestSync.condicionesParaGanar = function(jugadores){
         pass: false, 
         ganador: ""
     };
+    let deatCreat = 0;
+    let deatEmp = 0;
     let contCreaticidas = 0;
     let contEmp = 0;
 
     jugadores.forEach(element => {
-        if(element.nombreCarta == "Creaticida" && element.vida <= 0){
+        if(element.nombreCarta == "Creaticida"){
             contCreaticidas = contCreaticidas + 1;
+            if(element.vida <= 0){
+                deatCreat = deatCreat + 1;
+            }
         }
         //Falta añadir que pasa si son los otros emprendedores
-        if(element.nombreCarta == "Emprededor Social" && element.vida <= 0){
+        if(element.nombreCarta == "Emprededor Social"){
             contEmp = contEmp +1;
+            if(element.vida <= 0){
+                deatEmp = deatEmp + 1;
+            }
         }
     });
-    if(contCreaticidas > 0){
+    if(contCreaticidas = deatCreat){
         validation.pass = true;
         validation.ganador = "Emprendedores";
         return validation;
-    }else if(contEmp > 0){
+    }else if(contEmp = deatEmp){
         validation.pass = true;
         validation.ganador = "Creaticidas";
         return validation;
     }else{
+        validation.pass = false;
+        validation.ganador = "nadie";
         return validation;
     }
 }

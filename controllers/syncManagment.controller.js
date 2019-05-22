@@ -20,6 +20,7 @@ partidaInGame.findOne({ codigo: _codigo })
 .then(match => {
 
         let validation = gestPoderes.poderIndeciso(match.jugadores, _desicion);
+        console.log(validation);
         if(validation){
         match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
         match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
@@ -113,11 +114,11 @@ partidaInGame.findOne({ codigo: _codigo })
         if(validation != undefined){
         match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
         match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
-        partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+        partidaInGame.findOneAndUpdate({_id: match._id}, match)
         .then(result => {
             res.status(200).json({
                 message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
-                jugador, validation,
+                jugador: validation,
                 resultDb: result
             });
         })
@@ -129,7 +130,7 @@ partidaInGame.findOne({ codigo: _codigo })
      });
     }else{
         res.status(404).json({
-            message: "Hubo un problema al usar el poder del mentor, puede que para la partida este ya halla usado el poder"
+            message: "Hubo un problema al usar el poder del mentor"
         });
     }
 }).catch(err => {
@@ -180,6 +181,103 @@ exports.seguirAccionMentor = (req, res, next) => {
         }else{
             res.status(200).json({
                 message: "El jugador mentor todavia no ha usado su poder, no se tomara accion sobre los eventos"
+            });
+        }
+    })
+    .catch(err => {
+     res.status(404).json({
+         message: "Hubo un error al encontrar la partida", 
+         error: err
+     });   
+    });
+
+}
+
+/**
+ * Busca una partida y al jugador que quiera conocer dependiendo de la desicion le da una vida o le quita una, ademas el jugador estado se le ponen
+ * variables de uso de poder.
+ * Input: codigo,  jugadorEstado(email),jugadorAConocer(email), desicion("salvar" o "desmotivar")  
+ * Output: message:(exito o error),jugador(exito),resultDb(exito), error(solo si falla, info sobre el error),
+ */
+exports.accionEstado = (req, res, next) => {
+    let _codigo = req.body.codigo;
+    let _jugadorAConocer = req.body.jugadorAConocer;
+    let _jugadorEstado = req.body.jugadorEstado;
+    let _desicion = req.body.desicion;
+    
+    partidaInGame.findOne({ codigo: _codigo })
+    .then(match => {
+    
+            let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorAConocer, _desicion);
+            if(validation != undefined){
+            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+            partidaInGame.findOneAndUpdate({_id: match._id}, match)
+            .then(result => {
+                res.status(200).json({
+                    message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
+                    jugador: validation,
+                    resultDb: result
+                });
+            })
+            .catch(err => {
+                res.status(404).json({
+                    message: "Hubo un problema al actualizar la partida", 
+                    error: err
+                });
+         });
+        }else{
+            res.status(404).json({
+                message: "Hubo un problema al usar el poder del estado"
+            });
+        }
+    }).catch(err => {
+      res.status(404).json({
+        message: "Hubo un error al encontrar la partida", 
+        error: err
+      });
+    });
+}
+
+/**
+ * Busca una partida y si el jugador estado ha usado su poder se cambia de evento de lo contrario no se cambia.
+ * Input: codigo,  jugadorEstado(email),  
+ * Output: message:(exito o error),resultDb(exito), error(solo si falla, info sobre el error),
+ */
+exports.seguirAccionEstado = (req, res, next) => {
+
+    let _codigo = req.body.codigo;
+    let _jugadorEstado = req.body.jugadorEstado;
+
+    partidaInGame.findOne({codigo: _codigo})
+    .then(match =>{
+        let validator = false;
+        match.jugadores.forEach(element => {
+            if(element.email == _jugadorEstado){
+                if(element.powerUsed == true){
+                    validator = true;
+                }
+            }
+        });
+        if(validator){
+            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+            .then(result => {
+                res.status(200).json({
+                    message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
+                    resultDb: result
+                });
+            })
+            .catch(err => {
+                res.status(404).json({
+                    message: "Hubo un problema al actualizar la partida", 
+                    error: err
+                });
+         });
+        }else{
+            res.status(200).json({
+                message: "El jugador estado todavia no ha usado su poder, no se cambiara el evento"
             });
         }
     })
@@ -332,4 +430,6 @@ exports.transicionADia = (req, res, next) => {
       });
     });  
 }
+
+
 

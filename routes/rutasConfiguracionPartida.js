@@ -26,12 +26,18 @@ router.post("/unirsePartida", confMatchController.unirJugador);
 router.post("/asignarRol", confMatchController.asignarRol);
 router.post("/obtenerJugadores", confMatchController.obtenerJugadores);
 router.post("/conseguirEventoActual", confMatchController.conseguirEventoActual);
+router.post("/obtenerDesmotivados", confMatchController.obtenerDesmotivados);
 
 //Gestion de ejecucion
 router.post("/accionIndeciso", syncManagment.accionIndeciso);
 router.post("/seguirAccionIndeciso", syncManagment.seguirAccionIndeciso);
+router.post("/accionMentor", syncManagment.accionMentor);
+router.post("/seguirAccionMentor", syncManagment.seguirAccionMentor);
 router.post("/postulacionCreaticidas", syncManagment.postulacionCreaticidas);
 router.post("/accionCreaticidas", syncManagment.votacionCreaticidas);
+router.post("/accionEstado", syncManagment.accionEstado);
+router.post("/seguirAccionEstado", syncManagment.seguirAccionEstado);
+
 router.post("/seguirTransicionADia", syncManagment.transicionADia);
 
 

@@ -15,7 +15,7 @@ gestCartas.asignarRol = function(jugadores, tipoPartida){
             let empBasic = ["emprendedorSocial", "emprendedorCultural", "emprendedorTecnologico"];
             let unicos = ["estado", "mentor", "emprendedorIndeciso"];
             //Esta lista depende de el orden en que estan las anteriores 3 listas.
-            let primerosSiete = [creaticidas, creaticidas, unicos[0], unicos[1], creaticidas, creaticidas, unicos[2]];
+            let primerosSiete = [creaticidas, creaticidas, unicos[0], unicos[1], empBasic[1], empBasic[2], unicos[2]];
 
                 for (let i = 0; i < 7; i++) {
                     if(jugadores[i] != undefined){
@@ -53,28 +53,51 @@ gestCartas.asignarRol = function(jugadores, tipoPartida){
             return listaJugadores;    
         
     }else if(tipoPartida == 1){
-    //     //El ultimo que se une es el emprendero indeciso
-    //     partidas[codigo].jugadores[ partidas[codigo].jugadores.length - 1].role = 9;
-    
-    //     //Este metodo se debe modificar para hacer que 1/4 de las personas sean creaticidas y algunas roles no se repitan.
-    //    var setCartas = ["Emprendedor Social","Emprendedor Cultural","Emprendedor Tecnologico","Emprendedor Tradicional",
-    //    "Networker","Mentor","Inversionista","Innovador/invesigador","Emprendedor Indeciso","Creaticida","CEO"];
-    //     var aux = 0;
-    //         for (let i = 0; i < partidas[codigo].jugadores.length - 1; i++) {
-    //             aux = i;
-    //             if(aux >= setCartas.length){
-    //                 aux = aux-setCartas.length;
-    //             }
-    //         partidas[codigo].jugadores[i].role = setCartas[aux];
-            
-    //     }
     
         console.log("Falta revisar esta implementacionde asignar roles para avanzada");
         return jugadores; 
     
-    }else{
-        console.log("Aqui va la implementacion de la asignacion de roles para la personalizada");
-        return jugadores;
+    }else if(tipoPartida == 2){
+        let creaticidas = "creaticidas";
+        let empBasic = ["emprendedorSocial", "emprendedorCultural", "emprendedorTecnologico"];
+        let unicos = ["estado", "mentor", "emprendedorIndeciso"];
+        //Esta lista depende de el orden en que estan las anteriores 3 listas.
+        let primerosSiete = [creaticidas, creaticidas, unicos[0], unicos[1], creaticidas, creaticidas, unicos[2]];
+
+            for (let i = 0; i < 7; i++) {
+                if(jugadores[i] != undefined){
+                listaJugadores.push(factoryCard(primerosSiete[i], jugadores[i]));
+                }else{
+                    console.log("Se trata de iterar sobre un jugador que no esta");
+                }          
+            }
+        var cuantoCreatDebeHaber = listaJugadores.length / 3;
+        var numeroCreaticidas = 2;
+
+            for (let i = 0; i < jugadores.length; i++) {
+                if(jugadores[i].nombreCarta == "Creaticida"){
+                    numeroCreaticidas = numeroCreaticidas + 1;
+                }
+        }
+
+        var contForEmp = 0;
+            for (let i = 7; i < jugadores.length; i++){
+                if((listaJugadores.length/numeroCreaticidas) > cuantoCreatDebeHaber){
+                    listaJugadores.push(factoryCard("creaticidas", jugadores[i]));
+                    numeroCreaticidas = numeroCreaticidas + 1;
+
+                }else{
+                    listaJugadores.push(factoryCard(empBasic[contForEmp], jugadores[i]));
+                    contForEmp = contForEmp + 1;
+                    if(contForEmp == 3){
+                        contForEmp = 0;
+                    }
+
+                }
+           
+                }
+        
+        return listaJugadores;
     }
 }else{
     console.log("No estan los jugadores completos para iniciar");

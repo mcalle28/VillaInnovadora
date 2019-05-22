@@ -6,6 +6,8 @@ const gestPoderes = {}
 
 gestPoderes.poderIndeciso = function(jugadores, desicion){
 
+let validate = false;
+
 jugadores.forEach(element => {
     try {
         if(element.nombreCarta == "Emprendedor Indeciso"){
@@ -24,26 +26,71 @@ jugadores.forEach(element => {
             element.powerUsed = true;
             element.powerUsedDescription = "Poder usado para ser Emprendedor";     
             }
-            return true;
+            validate = true;
         }  
     } catch (error) {
         console.log(error);
-        return false;
     }
 });
+return validate;
 }
 
 gestPoderes.poderMentor = function(jugadores, jugadorAConocer, jugadorMentor){
 let fetchedPlayer;
+let validateMentor = false;
+let validatePlayerMeet = false;
 jugadores.forEach(e => {
     if(e.email == jugadorAConocer){
         fetchedPlayer = e;
+        validatePlayerMeet = true;
     }else if(e.email == jugadorMentor){
         e.powerUsed = true;
         e.powerUsedDescription = "Poder usado para conocer a " + jugadorAConocer.toString();
+        validateMentor = true;
     }
 });
+if(!validatePlayerMeet || !validateMentor){
+    fetchedPlayer = undefined;
+}
 return fetchedPlayer;
+}
+
+gestPoderes.poderEstado = function(jugadores, jugadorEstado, jugadorABuscar, desicion){
+    let validateEstado = false;
+    let validatePlayerMeet = false;
+
+    let fetchedPlayer = undefined;
+
+    jugadores.forEach(e => {
+        if(e.email == jugadorEstado){
+            fetchedPlayer = e;
+            if(desicion == "salvar"){
+            e.powerUsed = true;
+            e.powerUsedDescription = "Uso el poder para salvar"
+            validateEstado = true;
+            }else{
+            e.powerUsed = true;
+            e.vida = e.vida - 1;
+            e.powerUsedDescription = "Uso el poder para desmotivar"
+            validateEstado = true;    
+            }
+        }
+        if(e.email == jugadorABuscar){
+            if(desicion == "salvar"){
+                e.vida = e.vida + 1;
+                validatePlayerMeet = true;
+            }else{
+                e.vida = e.vida - 1;
+                validatePlayerMeet = true;
+            }
+        }
+    });
+
+    if(!validateEstado || !validatePlayerMeet){
+        fetchedPlayer = undefined;
+    }
+
+    return fetchedPlayer;   
 }
 
 module.exports = gestPoderes;

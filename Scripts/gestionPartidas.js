@@ -11,8 +11,8 @@ const Partida = require("../modelsDB/partidaInGame");
 gestPartidas.configurarPartidas = function(partidas, tipoPartida){
         if(tipoPartida == 0){
         try {
-            partidas.secuenciaNoche = ["llamadoIndeciso", "accionIndeciso", "llamadoMentor","accionMentor", "postulacionCreaticidas", "votacionCreaticidas",
-            "llamadoEstado", "accionEstado", "transicionADia"];
+            partidas.secuenciaNoche = ["llamadoIndeciso", "accionIndeciso", "llamadoMentor","accionMentor", "votacionCreaticidas",
+            "llamadoEstado", "accionEstado", "transicion"];
             partidas.secuenciaDia = ["postulacionRepresentante", "votacionRepresentante" ,"postulacionJuicio", 
             "votacionJuicio", "transicionANoche"];
             partidas.secuenciaEventoEspecial = ["postulacionEventoEspecial", "votacionEventoEspecial","transicion"];

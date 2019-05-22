@@ -24,46 +24,55 @@ router.get("/", (req, res) => {
  * 
  */
 
-//IN-TESTING
-// router.post("/accionMentor", (req, res, next) => {
+// router.post("/accionEstado", (req, res, next) => {
 
-//     if(partidas[req.body.codigo] != undefined){
-//         var _jugadorMentor = new Jugador("null");
-//         var _jugadorAConocer = new Jugador("null");
-//         partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
-//         partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
-//         console.log("Estado actual: " + partidas[req.body.codigo].estadoActual);
-//         partidas[req.body.codigo].jugadores.forEach(e => {
-//             if(e.nombre == req.body.nombreJugador){
-//                 _jugadorMentor = e;
-//             }else if(e.nombre == req.body.nombreJugadorAConocer){
-//                 _jugadorAConocer = e;
-//             }   
-//         });
-//         //Desicion debe ser "Creaticida" o de lo contrario sera emprendedor (social)
-//         _jugadorMentor.carta.poder(_jugadorAConocer,_jugadorMentor);
-//         console.log("Jugador mentor uso su poder para conocer a " + _jugadorAConocer.nombre);
-//         _jugadorMentor.powerUsed  = true;
-//         res.status(200).json({
-//             message: "Se logro usar el poder del mentor y eligio conocer a  " + _jugadorAConocer.nombre
-//         });
-//     }else{
-//         res.status(404).json({
-//             message: "No se logro encontrar la partida"
-//         });
-//     }   
+// if(partidas[req.body.codigo] != undefined){
+//     partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
+//     partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
+//     partidas[req.body.codigo].jugadores.forEach(e => {
+//         if(e.nombre == req.body.nombreEstado){
+//             //La desicion de salvar a alguien o no (true or false)....en el nombre a buscar tambien puede estar el estado para salvarse a si mismo.
+//             e.carta.poder(partidas[req.body.codigo].jugadores, req.body.nombreABuscar, req.body.desicionA);
+//             e.powerUsed = true;
+//             if(req.body.desicionA == "salvar"){
+//             e.powerUsedDescription = "El usuario desicio salvar";
+//             }else{
+//             e.powerUsedDescription = "El usuario decidio desmotivar"
+//             }
+        
+//         }
+//     });
+
+//     res.status(200).json({
+//         message: "se tomo la desicion de " + req.body.desicionA
+//     });
+
+// }else{
+//     res.status(404).json({
+//         message: "No se logro encontrar la partida"
+//     });
+// }
 
 // });
 
-// router.post("/seguiAccionMentor", (req, res, next) => {
+// router.post("/seguirAccionEstado", (req, res, next) => {
 
 //     if(partidas[req.body.codigo] != undefined){
+//         var _verification = false;
+//         //Transicion se refiere al cambio del dia a la noche o viceversa
 //         partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
 //         partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
-//         console.log("El estado actual es " + partidas[req.body.codigo].estadoActual);
 //         // Es un booleano con el mensaje de si debe pasar o no
+//         partidas[req.body.codigo].jugadores.forEach(e => {
+//             if(e.nombre == req.body.nombreEstado){
+//                 if(e.powerUsed == true){
+//                     _verification = true;
+//                     e.powerUsed = false;
+//                 }
+//             }
+//         });
 //         res.status(200).json({
-//             message: true
+//             message: _verification
 //         })
 
 //     }else{
@@ -76,68 +85,6 @@ router.get("/", (req, res) => {
 
 
 //COmo lo siguiente no esta comentado todavia no esta en revision ni en testing,
-
-router.post("/accionEstado", (req, res, next) => {
-
-if(partidas[req.body.codigo] != undefined){
-    partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
-    partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
-    partidas[req.body.codigo].jugadores.forEach(e => {
-        if(e.nombre == req.body.nombreEstado){
-            //La desicion de salvar a alguien o no (true or false)....en el nombre a buscar tambien puede estar el estado para salvarse a si mismo.
-            e.carta.poder(partidas[req.body.codigo].jugadores, req.body.nombreABuscar, req.body.desicionA);
-            e.powerUsed = true;
-            if(req.body.desicionA == "salvar"){
-            e.powerUsedDescription = "El usuario desicio salvar";
-            }else{
-            e.powerUsedDescription = "El usuario decidio desmotivar"
-            }
-        
-        }
-    });
-
-    res.status(200).json({
-        message: "se tomo la desicion de " + req.body.desicionA
-    });
-
-}else{
-    res.status(404).json({
-        message: "No se logro encontrar la partida"
-    });
-}
-
-});
-
-router.post("/seguirAccionEstado", (req, res, next) => {
-
-    if(partidas[req.body.codigo] != undefined){
-        var _verification = false;
-        //Transicion se refiere al cambio del dia a la noche o viceversa
-        partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
-        partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
-        // Es un booleano con el mensaje de si debe pasar o no
-        partidas[req.body.codigo].jugadores.forEach(e => {
-            if(e.nombre == req.body.nombreEstado){
-                if(e.powerUsed == true){
-                    _verification = true;
-                    e.powerUsed = false;
-                }
-            }
-        });
-        res.status(200).json({
-            message: _verification
-        })
-
-    }else{
-        res.status(404).json({
-            message: "No se logro encontrar la partida"
-        });
-    }
-
-});
-
-
-
 router.post("/postulacionRepresentante", (req, res ,next) => {
 
     if(partidas[req.body.codigo] != undefined){
