@@ -184,6 +184,43 @@ res.status(404).json({
 }
 
 /**
+ * Busca los jugadores de una partida por el codigo y si encuentra demotivados los devuelve de lo contrario solo envia un mensaje.
+ * Input: codigo
+ * Output: message:(exito o error), desmotivados(exito), error(solo si falla, info sobre el error)
+ */
+exports.obtenerDesmotivados = (req, res, next) => {
+
+let _codigo = req.body.codigo;
+
+partidaInGame.findOne({codigo: _codigo})
+.then(match => {
+    let desmotivados = [];
+    match.jugadores.forEach(element => {
+        if(element.vida == 0){
+            desmotivados.push(element);
+        }
+    });
+    if(desmotivados.length > 0){
+        res.status(200).json({
+            message: "Se encontraron desmotivados en la partida", 
+            desmotivados: desmotivados
+        });
+    }else{
+        res.status(200).json({
+            message: "No se encontro ningun desmotivado en la partida"
+        });
+    }
+})
+.catch(err => {
+    res.status(404).json({
+        message: "Hubo un problema al encontrar la partida", 
+        error: err
+    });
+});
+
+}
+
+/**
  * Busca una partida, coge la lista de jugadores  y modifica en la coleccion de estos el nombreCarta y descripcionCarta.
  * Input: codigo, tipoPartida(0: basica, 1:avanzada, 2:personalizada)
  * Output: message:(exito o error), users(solo si exito, array con jugadores actualizados con roles), error(solo si falla, info sobre el error)

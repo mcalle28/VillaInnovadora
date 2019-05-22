@@ -95,6 +95,104 @@ partidaInGame.findOne({ codigo: _codigo })
 }
 
 /**
+ * Busca una partida, obtiene los jugadores  y con un script encuentra encuentra un jugador y muestra este como resultado, ademas encuentra al jugador
+ * mentor y pone variables de poder como usadas;
+ * Input: codigo, jugadorAConocer(email), jugadorMentor(email)  
+ * Output: message:(exito o error),jugador(exito), error(solo si falla, info sobre el error), 
+ */
+exports.accionMentor = (req, res, next) => {
+
+let _codigo = req.body.codigo;
+let _jugadorAConocer = req.body.jugadorAConocer;
+let _jugadorMentor = req.body.jugadorMentor;
+
+partidaInGame.findOne({ codigo: _codigo })
+.then(match => {
+
+        let validation = gestPoderes.poderMentor(match.jugadores, _jugadorAConocer,_jugadorMentor);
+        if(validation != undefined){
+        match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+        match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+        partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+        .then(result => {
+            res.status(200).json({
+                message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
+                jugador, validation,
+                resultDb: result
+            });
+        })
+        .catch(err => {
+            res.status(404).json({
+                message: "Hubo un problema al actualizar la partida", 
+                error: err
+            });
+     });
+    }else{
+        res.status(404).json({
+            message: "Hubo un problema al usar el poder del mentor, puede que para la partida este ya halla usado el poder"
+        });
+    }
+}).catch(err => {
+  res.status(404).json({
+    message: "Hubo un error al encontrar la partida", 
+    error: err
+  });
+});
+
+}
+
+/**
+ * Busca una partida, obtiene los jugadores  y encuentra al mentor, si este ha usado el poder se pasa de evento de lo contrario no pasa de evento
+ * Input: codigo,  jugadorMentor(email)  
+ * Output: message:(exito o error), error(solo si falla, info sobre el error),
+ */
+exports.seguirAccionMentor = (req, res, next) => {
+
+    let _codigo = req.body.codigo;
+    let _jugadorMentor = req.body.jugadorMentor;
+
+    partidaInGame.findOne({codigo: _codigo})
+    .then(match =>{
+        let validator = false;
+        match.jugadores.forEach(element => {
+            if(element.email == _jugadorMentor){
+                if(element.powerUsed == true){
+                    validator = true;
+                }
+            }
+        });
+        if(validator){
+            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+            .then(result => {
+                res.status(200).json({
+                    message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
+                    resultDb: result
+                });
+            })
+            .catch(err => {
+                res.status(404).json({
+                    message: "Hubo un problema al actualizar la partida", 
+                    error: err
+                });
+         });
+        }else{
+            res.status(200).json({
+                message: "El jugador mentor todavia no ha usado su poder, no se tomara accion sobre los eventos"
+            });
+        }
+    })
+    .catch(err => {
+     res.status(404).json({
+         message: "Hubo un error al encontrar la partida", 
+         error: err
+     });   
+    });
+
+}
+
+/**
  * Busca una partida, obtiene los jugadores  y con un script encuentra si en los jugadores creaticidas han postulado 
  * en la votacion, donde de ser verdadero se cambia de evento y de ser falso solo se envia un mensaje.
  * 

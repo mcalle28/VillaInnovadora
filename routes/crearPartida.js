@@ -24,109 +24,58 @@ router.get("/", (req, res) => {
  * 
  */
 
+//IN-TESTING
+// router.post("/accionMentor", (req, res, next) => {
 
-router.post("/accionMentor", (req, res, next) => {
-
-    if(partidas[req.body.codigo] != undefined){
-        var _jugadorMentor = new Jugador("null");
-        var _jugadorAConocer = new Jugador("null");
-        partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
-        partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
-        console.log("Estado actual: " + partidas[req.body.codigo].estadoActual);
-        partidas[req.body.codigo].jugadores.forEach(e => {
-            if(e.nombre == req.body.nombreJugador){
-                _jugadorMentor = e;
-            }else if(e.nombre == req.body.nombreJugadorAConocer){
-                _jugadorAConocer = e;
-            }   
-        });
-        //Desicion debe ser "Creaticida" o de lo contrario sera emprendedor (social)
-        _jugadorMentor.carta.poder(_jugadorAConocer,_jugadorMentor);
-        console.log("Jugador mentor uso su poder para conocer a " + _jugadorAConocer.nombre);
-        _jugadorMentor.powerUsed  = true;
-        res.status(200).json({
-            message: "Se logro usar el poder del mentor y eligio conocer a  " + _jugadorAConocer.nombre
-        });
-    }else{
-        res.status(404).json({
-            message: "No se logro encontrar la partida"
-        });
-    }   
-
-});
-
-router.post("/seguiAccionMentor", (req, res, next) => {
-
-    if(partidas[req.body.codigo] != undefined){
-        partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
-        partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
-        console.log("El estado actual es " + partidas[req.body.codigo].estadoActual);
-        // Es un booleano con el mensaje de si debe pasar o no
-        res.status(200).json({
-            message: true
-        })
-
-    }else{
-        res.status(404).json({
-            message: "No se logro encontrar la partida"
-        });
-    }
-
-});
-
-//Este metodo verifica que los creaticidas hallan votado.
-// router.post("/accionCreaticidas", (req, res, next) => {
 //     if(partidas[req.body.codigo] != undefined){
-//     var _contCreat = 0;
-//     var _conVotes = 0;
-//     partidas[req.body.codigo].jugadores.forEach(e => {
-//         if(e.carta.nombre == "Creaticida"){
-//             _contCreat = _contCreat + 1;
-//             if(e.hasVoted == true){
-//                 e.powerUsed = true;
-//                 _conVotes = _conVotes + 1;
-//             }
-//         }
-//     });
-
-//     if(_conVotes == _contCreat){
+//         var _jugadorMentor = new Jugador("null");
+//         var _jugadorAConocer = new Jugador("null");
 //         partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
 //         partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
+//         console.log("Estado actual: " + partidas[req.body.codigo].estadoActual);
+//         partidas[req.body.codigo].jugadores.forEach(e => {
+//             if(e.nombre == req.body.nombreJugador){
+//                 _jugadorMentor = e;
+//             }else if(e.nombre == req.body.nombreJugadorAConocer){
+//                 _jugadorAConocer = e;
+//             }   
+//         });
+//         //Desicion debe ser "Creaticida" o de lo contrario sera emprendedor (social)
+//         _jugadorMentor.carta.poder(_jugadorAConocer,_jugadorMentor);
+//         console.log("Jugador mentor uso su poder para conocer a " + _jugadorAConocer.nombre);
+//         _jugadorMentor.powerUsed  = true;
 //         res.status(200).json({
-//             message: "Todos los creaticidas han votado",
-//             data: true
+//             message: "Se logro usar el poder del mentor y eligio conocer a  " + _jugadorAConocer.nombre
 //         });
 //     }else{
 //         res.status(404).json({
-//             message: "No todos los creaticidas han votado", 
-//             data: false
+//             message: "No se logro encontrar la partida"
 //         });
-//     }
-// }else{
-//     res.status(404).json({
-//         message: "No se encontro la partida"
-//     });
-// }
+//     }   
 
 // });
 
-router.post("/seguiAccionCreaticidas", (req, res, next) => {
+// router.post("/seguiAccionMentor", (req, res, next) => {
 
-    if(partidas[req.body.codigo] != undefined){
-        partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
-        partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
-        // Es un booleano con el mensaje de si debe pasar o no
-        res.status(200).json({
-            message: true
-        })
+//     if(partidas[req.body.codigo] != undefined){
+//         partidas[req.body.codigo].eventoSecuenciaActual = partidas[req.body.codigo].eventoSecuenciaActual + 1;
+//         partidas[req.body.codigo].estadoActual = partidas[req.body.codigo].secuenciaNoche[partidas[req.body.codigo].eventoSecuenciaActual];
+//         console.log("El estado actual es " + partidas[req.body.codigo].estadoActual);
+//         // Es un booleano con el mensaje de si debe pasar o no
+//         res.status(200).json({
+//             message: true
+//         })
 
-    }else{
-        res.status(404).json({
-            message: "No se logro encontrar la partida"
-        });
-    }
+//     }else{
+//         res.status(404).json({
+//             message: "No se logro encontrar la partida"
+//         });
+//     }
 
-});
+// });
+
+
+//COmo lo siguiente no esta comentado todavia no esta en revision ni en testing,
 
 router.post("/accionEstado", (req, res, next) => {
 
@@ -402,6 +351,8 @@ router.post("/postularIdeaEventoDia", (req,res, next) => {
 
 });
 
+//Este metodo aunque esta en parte en el refactor no se borra puesto que contiene un uso sobre la secuencia que sirve para el futuro
+
 
 //Pasa al dia y dependiendo de la desicion se sigue con evento o con secuencia de la noche
 // router.post("/seguirTransicionADia", (req, res, next) => {
@@ -487,51 +438,6 @@ router.post("/seguirTransicionANoche", (req, res, next) => {
     }
 
 });
-
-
-// router.post("/conseguirEventoActual", (req, res, next) => {
-
-// if(partidas[req.body.codigo] != undefined){
-
-//     res.status(200).json({
-//         message: "Se devuelve el evento actual y el dia", 
-//         evento : partidas[req.body.codigo].estadoActual,
-//         dia: partidas[req.body.codigo].tiempo
-//     });
-
-// }else{
-//     res.status(404).json({
-//         message: "No se encontro la partida"
-//     });
-// }
-
-
-
-// });
-
-//Esta ruta al brindar el nombre de un jugador con un codigo devuelve la carta que este utiliza
-// router.post("/obtenerPersonaje", (req,res, next) => {
-//     var data;
-//     var codigo = req.body.codigo;
-//     var nombreABuscar = req.body.nombreA;
-//     if(partidas[codigo] != undefined){
-//     partidas[codigo].jugadores.forEach(e => {
-//         if(e.nombre == nombreABuscar){
-//             data = e.carta.nombre;
-//         }
-
-//     });
-
-//     res.status(200).json({
-//         message:"Busqueda exitosa",
-//         rol: data
-//     });
-//     }else{
-//         res.status(404).json({
-//             message: "No se encontro la partida, codigo usado: " + req.body.codigo.toString()
-//         });
-//     }
-// });
 
 router.post("/postularLista", (req, res, next) => {
     if(partidas[req.body.codigo] != undefined){
