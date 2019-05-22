@@ -509,42 +509,6 @@ router.post("/seguirTransicionANoche", (req, res, next) => {
 
 // });
 
-router.post("/condicionParaGanarBasica", (req,res, next) => {
-    var codigo = req.body.codigo;
-    var contCreat = 0;
-    var contEmp = 0;
-    //Se comento que en la basica no entra multinacional ni networker.
-    partidas[codigo].jugadores.forEach(e => {
-        if(e.carta.nombre == "Creaticida" && e.estado != "Desmotivado"){
-            contCreat = contCreat + 1;
-        }else if(e.vida != 0){
-            contEmp = contEmp + 1;
-        }
-    });
-    //Si ninguno de los dos es 0 entonces todavia no hay un ganador
-    if(contCreat == 0 || contEmp == 0){
-        if(contCreat > 0){
-            partidas[codigo].ganadoresPartida = "creaticidas";
-            res.status(200).json({
-                message: "Ganaron los creaticidas",
-                code: 1
-            });
-        }else{
-            partidas[codigo].ganadoresPartida = "emprendedores";
-            res.status(200).json({
-                message: "Ganaron los Emprendedores y aliados", 
-                code : 2
-            });
-        }
-    }else{
-        res.status(501).json({
-            message: "Todavia no se alcanzan condiciones para ganar",
-            code: -1
-        });
-    }
-
-});
-
 //Esta ruta al brindar el nombre de un jugador con un codigo devuelve la carta que este utiliza
 // router.post("/obtenerPersonaje", (req,res, next) => {
 //     var data;

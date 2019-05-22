@@ -73,7 +73,7 @@ exports.configurarPartida = (req, res, next) => {
         .then(match => {
 
         let matchSave = gestPartidas.configurarPartidas(match, _tipoPartida);
-            console.log(matchSave);
+        console.log(matchSave);
 
         partidaInGame.findOneAndUpdate({codigo: _codigo}, matchSave).then(result => {
             res.status(200).json({
@@ -202,20 +202,18 @@ exports.asignarRol = (req, res, next) => {
         .then(match => {
             gestCartas.asignarRol(match.jugadores, _tipoPartida);
 
-            Promise.all(match.jugadores.map(idJugador => {
-                return Jugador.findOneAndUpdate({email: idJugador.email},idJugador).exec();
-            })).then(result => {
-                    console.log(result);
-            }).catch(err => {
+            partidaInGame.findOneAndUpdate({_id: match._id}, match)
+            .then(result => {
+                res.status(200).json({
+                    message:" Se logro actualizar la partida con los roles asignados", 
+                    resultDb: result
+                });
+            })
+            .catch(err => {
                 res.status(404).json({
-                    message: "Problema al encontrar uno de los jugdores", 
+                    message: "Hubo un problema al actualizar la partida", 
                     error: err
                 });
-            });
-
-            res.status(200).json({
-                message: "Se lograron actualizar todos los jugadores",
-                users: fetchedUsers
             });
 
         }).catch(err => {

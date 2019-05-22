@@ -19,9 +19,8 @@ let _desicion = req.body.desicion;
 partidaInGame.findOne({ codigo: _codigo })
 .then(match => {
 
-    let indeciso = gestPoderes.poderIndeciso(match.jugadores, _desicion);
-    Jugador.findOneAndUpdate({email: indeciso.email}, indeciso)
-    .then(result => {
+        let validation = gestPoderes.poderIndeciso(match.jugadores, _desicion);
+        if(validation){
         match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
         match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
         partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
@@ -36,15 +35,12 @@ partidaInGame.findOne({ codigo: _codigo })
                 message: "Hubo un problema al actualizar la partida", 
                 error: err
             });
-        });
-    })
-    .catch(err => {
+     });
+    }else{
         res.status(404).json({
-            message:"Error al actualizar indeciso", 
-            error: err
+            message: "Hubo un problema al usar el pdoer del indeciso"
         });
-    });
-
+    }
 }).catch(err => {
   res.status(404).json({
     message: "Hubo un error al encontrar la partida", 
@@ -170,7 +166,7 @@ partidaInGame.findOne({ codigo: _codigo })
         });    
     }else{
         res.status(200).json({
-            message: "Todavia faltan creaticidas por postular",
+            message: "Todavia faltan creaticidas por votar",
         });
     }
 }).catch(err => {
@@ -191,14 +187,16 @@ partidaInGame.findOne({ codigo: _codigo })
  */
 exports.transicionADia = (req, res, next) => {
     let _codigo = req.body.codigo;
-    
+    console.log(_codigo);
     partidaInGame.findOne({ codigo: _codigo })
     .then(match => {
         //Este validator (onSucces) devuelve {ganador: String, empate: Boolean, jugadoresEmpatados: Array<JugadoresPartidaInGame
         let validator = gestSync.condicionesParaGanar(match.jugadores);
+        console.log(validator);
         if(validator.pass == true){
             match.eventoSecuenciaActual = -1;
             match.estadoActual = "Partida finalizada";
+            match.jugadores = [];
             partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
             .then(result => {
                 res.status(200).json({

@@ -94,29 +94,37 @@ exports.obtenerPostulado = (req, res, next) => {
  */
 exports.addVotoPersona = (req, res, next) => {
     //Falta usar el arreglo de postulados y buscar sobre este, porque en este momento se busca en todos los jugadores
-    //let _codigo = req.body.codigo;
+    let _codigo = req.body.codigo;
     let _jugadorAVotar = req.body.jugadorAVotar;
     let _jugadorVotante = req.body.jugadorVotante;
 
-    Jugador.findOneAndUpdate({email: _jugadorAVotar}, { $inc: { "votesAgainst" : 1 } })
-    .then(player => {
-        Jugador.findOneAndUpdate({email: _jugadorVotante}, {hasVoted: true})
-        .then(player2 => {
-            res.status(200).json({
-                message: "Se logro actualizar el jugador postulador y el jugador a postular"
-            });
-        })
-        .catch(err => {
-            res.status(404).json({
-                message: "Hubo un problema al encontrar el jugador votante", 
-                error: err
-            }); 
+    partidaInGame.findOne({codigo: _codigo})
+    .then(match => {
+        match.jugadores.forEach(element => {
+            if(element.email == _jugadorAVotar){
+                element.votesAgainst = element.votesAgainst + 1;
+            }else if(element.email == _jugadorVotante){
+                element.hasVoted = true;
+            }
         });
-        
+    partidaInGame.findOneAndUpdate({_id: match._id}, match)
+    .then(result => {
+        res.status(200).json({
+            message: "Se logro actualizar la partida", 
+            resultDb: result
+        });
     })
     .catch(err => {
         res.status(404).json({
-            message: "Hubo un problema al encontrar el jugador a votar"
+            message: "Hubo un problema al actualizar la partida", 
+            error: err
+        });
+    });
+    })
+    .catch(err=> {
+        res.status(404).json({
+            message: "Hubo un problema al encontrar la partida", 
+            error: err
         });
     });
 
@@ -134,37 +142,28 @@ exports.conocerGanador = (req, res, next ) => {
     let _codigo = req.body.codigo;
       partidaInGame.findOne({ codigo: _codigo })
         .then(match => {
-            Promise.all(match.jugadores.map(idJugador => {
-                return Jugador.findOne({_id: idJugador}).exec();
-            })).then(fetchedUsers => {
-               let dataSend = gestVotaciones.conocerGanador(fetchedUsers);
-               //Se toma el estado tansicion, pero se debera se mas especifico ya que no cubre todos los casos de los eventos.
-                if(match.estadoActual == "transicion"){
-                Jugador.findOneAndUpdate({email: dataSend.ganador.email}, { $inc: { "vida" : -1 } })
-                .then(result => {
-                    res.status(200).json({
-                        message: "Se lograron actualizar todos los jugadores, y tuvo efecto quitando una vida al jugador ... Evento: " + match.estadoActual,
-                        data: dataSend
-                    });    
-                })
-                .catch(err => {
-                    res.status(404).json({
-                        message: "Hubo un problema al tomar accion sobre el ganador", 
-                        error: err
-                    });
-                });
-                }else{
+            
+        let dataSend = gestVotaciones.conocerGanador(match.jugadores);
+        if(match.estadoActual == "transicion"){
+            match.jugadores.forEach(element => {
+                if(element.email == dataSend.ganador.email){
+                    element.vida = element.vida - 1;
+                }
+            });
+            partidaInGame.findOneAndUpdate({_id: match._id}, match)
+            .then(result => {
                 res.status(200).json({
-                    message: "Se lograron actualizar todos los jugadores, pero no tuvo efecto el ganador ya que el evento no se indentifico",
-                    error: ""
+                    message: "Se logro actualizar la partida disminuyendo una vida al ganador",
+                    resultDb: result
                 });
-            }
-            }).catch(err => {
+            })
+            .catch(err => {
                 res.status(404).json({
-                    message: "Problema al encontrar uno de los jugdores", 
+                    message:"Hubo un problema al actualizar la partida", 
                     error: err
                 });
             });
+        }    
 
         }).catch(err => {
           res.status(404).json({
