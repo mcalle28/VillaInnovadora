@@ -8,6 +8,9 @@ const gestVotaciones = require("../Scripts/gestionVotacion");
  * Input: codigo, jugadorAPostular, jugadorPostulador
  * Output: message:(exito o error), error(solo si falla, info sobre el error), res(resultado de guardar en la base de datos) 
  */
+
+ //FALTA MEJORAR ESTE PARA QUE NO USE VOTACIONES SINO SOLO JGUADORES
+
 exports.postularPersona = (req, res, next) => {
     let _codigo = req.body.codigo;
     //Se usa el email para los jugadores
@@ -69,6 +72,8 @@ exports.postularPersona = (req, res, next) => {
  * Input: codigo
  * Output: message:(exito o error), error(solo si falla, info sobre el error), postulados(arreglo con los jugadores postulados) 
  */
+
+ //FALTA MEJORAR ESTE PARA QUE NO USE VOTACIONES SINO SOLO JGUADORES
 exports.obtenerPostulado = (req, res, next) => {
     let _codigo = req.body.codigo;
     partidaInGame.findOne({codigo: _codigo})

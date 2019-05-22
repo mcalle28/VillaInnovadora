@@ -36,13 +36,6 @@ var partidaSchema = new mongoose.Schema({
     temaEventoEspecial: {type: String, require: false},
     tituloEventoEspecial: {type: String, require: false},
     tiempo: {type: String, require: false},
-    votaciones: {
-        postulados: [{ type: Schema.Types.ObjectId, ref: 'Jugador', require:false }],
-        ganador: {type: String, require: false},
-        conVotos: {type: Number, require: false}, 
-        empate: {type: Boolean, require: false},
-        jugadoresEmpatados: [{type: String, require: false}]
-    },
 });
 
 

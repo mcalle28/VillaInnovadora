@@ -41,7 +41,7 @@ exports.createUser = (req, res, next) => {
 
 /**
  * Busca en la partida los jugadors, consigue los jugadores de la db y busca por email para devolver el rol de esta persona.
- * Input: nombre, email 
+ * Input: nombreA, email 
  * Output: message:(exito o error), error(solo si falla, info sobre el error), res(resultado de guardar en la base de datos) 
  */
 exports.obtenerPersonaje = (req, res , next) => {

@@ -31,14 +31,7 @@ exports.crearPartida = (req, res, next ) => {
             temaEventoEspecial: "notSet",
             tituloEventoEspecial:"notSet",
             ganadoresPartida:"no hay ganadores todavia",
-            eventoSecuenciaActual: -1, 
-            votaciones: {
-                postulados: [],
-                ganador: "", 
-                conVotos: 0, 
-                empate: false, 
-                jugadoresEmpatados: []
-            }
+            eventoSecuenciaActual: -1
         });
         partidaSave.save().then(result => {
             res.status(200).json({
