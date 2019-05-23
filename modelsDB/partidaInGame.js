@@ -9,11 +9,11 @@ var partidaSchema = new mongoose.Schema({
     //2 y se seguiria el ciclo 1-2 hasta que se lleguen a las condiciones de ganar donde se pasa al estado donde se
     //Finaliza la partida
     eventoSecuenciaActual:{type: Number, require: false},
-    codigo: {type: Number, require: true, unique: true},
+    codigo: {type: Number, require: true},
     ganadoresPartida: {type: String, require: false},
     jugadores:[{
-        nombre: {type: String, require: true},
-        email: {type: String, required: true, unique: true},
+        nombre: {type: String, require: false},
+        email: {type: String, required: false},
         vida: {type: Number, require: false},
         protected: {type: Boolean, require: false},
         beenPostulated: {type: Boolean, require: false},
