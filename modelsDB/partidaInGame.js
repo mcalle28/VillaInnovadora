@@ -26,7 +26,7 @@ var partidaSchema = new mongoose.Schema({
         powerUsedDescription: {type: String, require: false},
         nombreCarta: {type: String, require: false},
         descripcionCarta: {type: String, require: false},
-        }],
+    }],
     //No se ha puesto tipo de partida, pero se usa de la siguiente forma 0: basica, 1 avanzada, 2: personalizada.
     tipoPartida:{type: Number, require: false},
     secuenciaDia: [{type: String, require: false}],

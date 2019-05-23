@@ -13,8 +13,8 @@ gestPartidas.configurarPartidas = function(partidas, tipoPartida){
         try {
             partidas.secuenciaNoche = ["llamadoIndeciso", "accionIndeciso", "llamadoMentor","accionMentor", "votacionCreaticidas",
             "llamadoEstado", "accionEstado", "transicion"];
-            partidas.secuenciaDia = ["postulacionRepresentante", "votacionRepresentante" ,"postulacionJuicio", 
-            "votacionJuicio", "transicionANoche"];
+            partidas.secuenciaDia = ["postulacionJuicio", 
+            "votacionJuicio", "transicion"];
             partidas.secuenciaEventoEspecial = ["postulacionEventoEspecial", "votacionEventoEspecial","transicion"];
             partidas.eventoSecuenciaActual = partidas.eventoSecuenciaActual + 1;
             partidas.estadoActual = partidas.secuenciaNoche[partidas.eventoSecuenciaActual];

@@ -220,6 +220,8 @@ partidaInGame.findOne({codigo: _codigo})
 
 }
 
+
+
 /**
  * Busca una partida, coge la lista de jugadores  y modifica en la coleccion de estos el nombreCarta y descripcionCarta.
  * Input: codigo, tipoPartida(0: basica, 1:avanzada, 2:personalizada)

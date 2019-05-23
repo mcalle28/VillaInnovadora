@@ -16,27 +16,6 @@ return validation;
 
 }
 
-gestSync.creaticidasHanPostulado = function(jugadores){
-    let validation = false;
-    let contCreaticidas = 0;
-    let contHasPostulated = 0;
-    jugadores.forEach(e => {
-        if(e.nombreCarta == "Creaticida"){
-            contCreaticidas = contCreaticidas + 1;
-        }
-        if(e.hasPostulated == true){
-            contHasPostulated = contHasPostulated + 1;
-        }
-    });
-
-    if(contCreaticidas == contHasPostulated){
-        validation = true;
-    }
-
-    return validation;
-
-}
-
 gestSync.creaticidasHanVotado = function(jugadores){
     let validation = false;
     let contCreaticidas = 0;
@@ -74,8 +53,8 @@ gestSync.condicionesParaGanar = function(jugadores){
                 deatCreat = deatCreat + 1;
             }
         }
-        //Falta añadir que pasa si son los otros emprendedores
-        if(element.nombreCarta == "Emprededor Social"){
+        let getEmp = element.nombreCarta.split(" ")[0];
+        if(getEmp == "Emprededor"){
             contEmp = contEmp +1;
             if(element.vida <= 0){
                 deatEmp = deatEmp + 1;
@@ -96,4 +75,5 @@ gestSync.condicionesParaGanar = function(jugadores){
         return validation;
     }
 }
+
 module.exports = gestSync;

@@ -291,48 +291,6 @@ exports.seguirAccionEstado = (req, res, next) => {
 }
 
 /**
- * Busca una partida, obtiene los jugadores  y con un script encuentra si en los jugadores creaticidas han postulado 
- * en la votacion, donde de ser verdadero se cambia de evento y de ser falso solo se envia un mensaje.
- * 
- * Input: codigo  
- * Output: message:(exito o error), error(solo si falla, info sobre el error), //El server cambia de evento si no creaticidas han postulado en la partida.
- */
-exports.postulacionCreaticidas = (req, res, next) => {
-    let _codigo = req.body.codigo;
-
-partidaInGame.findOne({ codigo: _codigo })
-.then(match => {
-    let validation = gestSync.creaticidasHanPostulado(match.jugadores);
-    if(validation){
-        match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
-        match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
-        partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
-        .then(result => {
-            res.status(200).json({
-                message: "Todos los creaticidas han votado y se cambio el evento"
-            });
-        })
-        .catch(err => {
-            res.status(404).json({
-                message: "Hubo un problema al actualizar la partida", 
-                error: err
-            });
-        });    
-    }else{
-        res.status(200).json({
-            message: "Todavia faltan creaticidas por postular"
-        });
-    }
-}).catch(err => {
-  res.status(404).json({
-    message: "Hubo un error al encontrar la partida", 
-    error: err
-  });
-});
-}
-
-
-/**
  * Busca una partida, obtiene los jugadores y con un script encuentra si los jugadores creaticidas han votado, si es verdad
  * se cambia el evento de la partida, sino se envia solo mensaje.
  * Input: codigo  
@@ -374,6 +332,18 @@ partidaInGame.findOne({ codigo: _codigo })
 }
 
 
+exports.postulacionRep = (req, res, next) => {
+
+let _codigo = codigo;
+
+partidaInGame.findOne({codigo: _codigo})
+.then(match => {
+    
+})
+.catch();
+
+}
+
 /**
  * Busca la partida y obtiene los jugadores , cuando el primer equipo llegue a 0 vidas en sus jugadores (creaticidas o emprendedores) se le condedera la victoria
  * al otro equipo.
@@ -393,6 +363,7 @@ exports.transicionADia = (req, res, next) => {
             match.eventoSecuenciaActual = -1;
             match.estadoActual = "Partida finalizada";
             match.jugadores = [];
+
             partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
             .then(result => {
                 res.status(200).json({
@@ -407,12 +378,29 @@ exports.transicionADia = (req, res, next) => {
                 });
             });    
         }else{
+            var _validateRep = false;
+
+            match.jugadores.forEach(e => {
+                if(e.nombreCarta == "Representante Empresarial"){
+                    _validateRep = true;
+                }
+            });
+            //Se añade a la secuencia el representante si no esta y si esta se quita de la secuencia
+            if(_validateRep == true){
+            console.log("Se ha quitado de la secuencia la postulacion y votacion del representante");
+            match.secuenciaDia.splice(0,2);
+            }else{
+            console.log("Se ha añadido a postulacion y votacion de representante");
+            match.secuenciaDia.unshift("votacionRepresentante");
+            match.secuenciaDia.unshift("postulacionRepresentante");
+            }
+            match.tiempo = "Dia";
             match.eventoSecuenciaActual = 0;
             match.estadoActual = match.secuenciaDia[match.eventoSecuenciaActual];
             partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
             .then(result => {
                 res.status(200).json({
-                    message: "Todavia no se encuentra ganador se sigue la partida ", 
+                    message: "Todavia no se encuentra ganador se sigue la partida a dia", 
                     resultDb: result
                 });
             })
