@@ -33,4 +33,14 @@ gestVotacion.conocerGanador = function(jugadores){
     return data;
 }
 
+gestVotacion.postularPersona = function(jugadores, jugadorAPostular, jugadorPostulador){
+    jugadores.forEach(e => {
+        if(e.email = jugadorAPostular){
+            e.beenPostulated = true;
+        }else if(e.email = jugadorPostulador){
+            e.hasPostulated = true;
+        }
+    });
+    }
+
 module.exports = gestVotacion;

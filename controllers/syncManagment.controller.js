@@ -331,16 +331,145 @@ partidaInGame.findOne({ codigo: _codigo })
 });
 }
 
-
+/**
+ * Busca los jugadores de una partida y si por lo menos 1 se ha postulado entonces se sigue con el siguiente evento
+ * Input: codigo  
+ * Output: message:(exito o error), jugadoresPostulados(exito),matchModified(exito), error(solo si falla, info sobre el error).
+ */
 exports.postulacionRep = (req, res, next) => {
 
-let _codigo = codigo;
+let _codigo = req.body.codigo;
 
 partidaInGame.findOne({codigo: _codigo})
 .then(match => {
-    
+    let jugadoresPostulados = [];
+    match.jugadores.forEach(e => {
+        if(e.beenPostulated == true){
+            jugadoresPostulados.push(e);
+        }
+    });
+
+    if(jugadoresPostulados.length > 0){
+        match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+        match.estadoActual = match.secuenciaDia[match.eventoSecuenciaActual];
+        partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+        .then(result => {
+            res.status(200).json({
+                message:"Hay por lo menos una persona postulada y se actualizo la partida con nuevo evento",
+                jugadoresPostulados: jugadoresPostulados, 
+                matchModified: result
+            });
+        })
+        .catch(err => {
+            res.status(404).json({
+                message: "Hubo un problema al actualizar la partida", 
+                error: err
+            });
+        });
+    }else{
+        res.status(200).json({
+            message: "Tiene que postularse por lo minimo una persona para continuar"
+        });
+    }
 })
-.catch();
+.catch(err => {
+    res.status(404).json({
+        message: "Hubo un error al encontrar la partida", 
+        error: err
+    });
+});
+
+}
+
+/**
+ * Busca una partida, obtiene los jugadores y con un script encuentra si todos los jugadores han votado, si es verdad
+ * se cambia el evento de la partida, sino se envia solo mensaje.
+ * Input: codigo  
+ * Output: message:(exito o error), resultDB(exito), error(solo si falla, info sobre el error)
+ */
+exports.votacionRep = (req, res, next) => {
+    let _codigo = req.body.codigo;
+
+    partidaInGame.findOne({ codigo: _codigo })
+    .then(match => {
+        let validation = gestSync.todosHanVotado(match.jugadores);
+        if(validation){
+            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+            match.estadoActual = match.secuenciaDia[match.eventoSecuenciaActual];
+            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+            .then(result => {
+                res.status(200).json({
+                    message: "Todos han votado y se cambio el evento",
+                    resultDb: result
+                });
+            })
+            .catch(err => {
+                res.status(404).json({
+                    message: "Hubo un problema al actualizar la partida", 
+                    error: err
+                });
+            });    
+        }else{
+            res.status(200).json({
+                message: "Todavia faltan jugadores por votar",
+            });
+        }
+    }).catch(err => {
+      res.status(404).json({
+        message: "Hubo un error al encontrar la partida", 
+        error: err
+      });
+    });
+}
+
+/**
+ * Antes de esto se debe conocer al ganador y este link checkea si el representante existe
+ * Input: codigo  
+ * Output: message:(exito o error), resultDB(exito), error(solo si falla, info sobre el error)
+ */
+exports.seguirVotacionRep = (req, res, next) => {
+
+let _codigo = req.body.codigo;
+console.log(_codigo);
+partidaInGame.findOne({codigo: _codigo})
+.then(match => {
+let validation = false;
+
+match.jugadores.forEach(e => {
+if(e.nombreCarta2 == "Representante Empresarial"){
+    validation = true;
+}
+});
+
+if(validation){
+    match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+    match.estadoActual = match.secuenciaDia[match.eventoSecuenciaActual];
+    partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+    .then(result => {
+        res.status(200).json({
+            message: "Se encontro representante y se cambio el evento",
+            resultDb: result
+        });
+    })
+    .catch(err => {
+        res.status(404).json({
+            message: "Hubo un problema al actualizar la partida", 
+            error: err
+        });
+    }); 
+}else{
+    res.status(404).json({
+        message: "No se puede seguir el evento porque no se ha definido el representante"
+    });
+}
+
+})
+.catch(err => {
+    res.status(404).json({
+        message: "Hubo un error al encontrar la partida", 
+        error: err
+    });
+});
 
 }
 
@@ -388,9 +517,10 @@ exports.transicionADia = (req, res, next) => {
             //Se añade a la secuencia el representante si no esta y si esta se quita de la secuencia
             if(_validateRep == true){
             console.log("Se ha quitado de la secuencia la postulacion y votacion del representante");
-            match.secuenciaDia.splice(0,2);
+            match.secuenciaDia.splice(0,3);
             }else{
             console.log("Se ha añadido a postulacion y votacion de representante");
+            match.secuenciaDia.unshift("seguirVotRep");
             match.secuenciaDia.unshift("votacionRepresentante");
             match.secuenciaDia.unshift("postulacionRepresentante");
             }

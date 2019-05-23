@@ -1,74 +1,86 @@
 const partidaInGame = require("../modelsDB/partidaInGame");
-const Jugador = require("../modelsDB/jugador");
 const gestVotaciones = require("../Scripts/gestionVotacion");
+const gestPoderes = require("../Scripts/gestionPoderes");
 
 /**
- * Busca una partida, luego busca a el jugador por email y pone beenPostulated = true, luego si el usuario se consiguio se añade a la seccion de postulados, votaciones
- * en la partida deseada, luego busca al jugador postulador y pone hasPostulated = true.
+ * Busca en la partida el jugador a postular y el jugador postulador y les pone las variables de postulacion necesarias en true.
  * Input: codigo, jugadorAPostular, jugadorPostulador
- * Output: message:(exito o error), error(solo si falla, info sobre el error), res(resultado de guardar en la base de datos) 
+ * Output: message:(exito o error), error(solo si falla, info sobre el error), matchModified(resultado de guardar en la base de datos) 
  */
-
- //FALTA MEJORAR ESTE PARA QUE NO USE VOTACIONES SINO SOLO JGUADORES
-
 exports.postularPersona = (req, res, next) => {
     let _codigo = req.body.codigo;
     //Se usa el email para los jugadores
     let _jugadorAPostular = req.body.jugadorAPostular;
     let _jugadorPostulador = req.body.jugadorPostulador;
 
-        partidaInGame.findOne({codigo: _codigo})
-        .then(match => {
-            Jugador.findOneAndUpdate({email: _jugadorAPostular}, {beenPostulated: true})
-            .then(user => {
-                if(user != undefined){
-                match["votaciones"].postulados.push(user);
-                partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
-                .then(result => {
-                    Jugador.findOneAndUpdate({email: _jugadorPostulador}, {hasPostulated: true})
-                    .then(result => {
-                        res.status(200).json({
-                            message: "Se logro postular a la persona en la partida y actualizar el jugador", 
-                            res: result
-                        });
-                    })
-                    .catch(err => {
-                        res.status(404).json({
-                            message: "No se logro encontrar el jugador postulador", 
-                            error: err
-                        });
-                    });
-                })
-                .catch(err => {
-                    res.status(404).json({
-                        message: "No se pudo encontrar la partida para actualizar", 
-                        error: err
-                    });
-                })
-            }else{
-                res.status(404).json({
-                    message: "No se pudo encontrar al jugador a postular"
-                });
-            }
-            })
-            .catch(err => {
-                res.status(404).json({
-                    message: "No se logro encontrar el jugador a postular", 
-                    error: err
-                });
-            });
-        })
-        .catch(err => {
-            res.status(404).json({
-                message: "Problema para encontrar la partida", 
-                error: err
-            });
+partidaInGame.findOne({codigo: _codigo})
+.then(match => {
+    gestVotaciones.postularPersona(match.jugadores, _jugadorAPostular, _jugadorPostulador);
+    partidaInGame.findOneAndUpdate({_id: match._id}, match)
+    .then(result => {
+        res.status(200).json({
+            message: "Se logro actualizar la partida con la postulacion",
+            matchModified: result
         });
+    })
+    .catch(err => {
+        res.status(404).json({
+            message: "Hubo un error al actualizar la partida", 
+            error: err
+        });
+    });
+})
+.catch(err => {
+    res.status(404).json({
+        message: "Hubo un error al encontrar la partida",
+        error: err
+    });
+});
 }
 
+/**
+ * Busca los el jugadorAPostualr en la partida y pone las variables de postulacion necesarias en true
+* Input: codigo, jugadorPostulador
+* Output: message:(exito o error),matchModified(exito), error(solo si falla, info sobre el error), matchModified(resultado de guardar en la base de datos) 
+*/
+exports.postulacionPropia = (req, res, next) => {
+
+let _codigo = req.body.codigo;
+let _jugadorAPostular = req.body.jugadorAPostular;
+
+partidaInGame.findOne({codigo: _codigo})
+.then(match => {
+    match.jugadores.forEach(e => {
+        if(e.email == _jugadorAPostular){
+            e.beenPostulated = true;
+            e.hasPostulated = true;
+        }
+    });
+    partidaInGame.findOneAndUpdate({_id: match._id}, match)
+    .then(matchModified => {
+        res.status(200).json({
+            message:"Se logro actualizar al jugador dentro de la partida", 
+            matchModified: matchModified
+        });
+    })
+    .catch(err => {
+        res.status(404).json({
+            message: "Hubo un error al actualizar la partida", 
+            error: err
+        });
+    });
+})
+.catch(err => {
+    res.status(404).json({
+        message: "Hubo un error al encontrar la partida", 
+        error: err
+    });
+});
+
+}
 
 /**
- * Busca una partida y obtiene la seccion de votaciones.postulados
+ * Busca una partida y obtiene los jugadores que han sido postulados
  * Input: codigo
  * Output: message:(exito o error), error(solo si falla, info sobre el error), postulados(arreglo con los jugadores postulados) 
  */
@@ -78,9 +90,15 @@ exports.obtenerPostulado = (req, res, next) => {
     let _codigo = req.body.codigo;
     partidaInGame.findOne({codigo: _codigo})
     .then(match => {
+        let jugadoresPostulados = [];
+        match.jugadores.forEach(e => {
+            if(e.beenPostulated == true){
+                jugadoresPostulados.push(e);
+            }
+        });
         res.status(200).json({
-            message: "Se logro encontrar los postulados", 
-            postulados: match.votaciones.postulados
+            message: "Se lograron encontrar los postulados", 
+            jugadoresPostulados: jugadoresPostulados
         });
     })
     .catch(err => {
@@ -140,7 +158,7 @@ exports.addVotoPersona = (req, res, next) => {
 /**
  * Busca la partida, mapea los jugadores (estan por id), y los busca en la db donde estos son enviados a un script que devuelve el ganador o un empate.
  * Input: codigo
- * Output: message:(exito o error), error(solo si falla, info sobre el error), data = {ganador: jugador, empate: boolean, jugadoresEmpatados:array}
+ * Output: message:(exito o error), resultDb(exito), dataSend(exito), error(solo si falla, info sobre el error), dataSend = {ganador: jugador, empate: boolean, jugadoresEmpatados:array}
  */
 exports.conocerGanador = (req, res, next ) => {
     //Falta añadir las diferentes acciones sobre los diferentes eventos como votacion de rep, entre otras.
@@ -153,13 +171,19 @@ exports.conocerGanador = (req, res, next ) => {
             match.jugadores.forEach(element => {
                 if(element.email == dataSend.ganador.email){
                     element.vida = element.vida - 1;
+                    element.votesAgainst = 0;
+                    element.beenPostulated = false;
+                    element.hasVoted = false;
+                    element.hasPostulated = false; 
+                    element.powerUsed = false;
                 }
             });
             partidaInGame.findOneAndUpdate({_id: match._id}, match)
             .then(result => {
                 res.status(200).json({
                     message: "Se logro actualizar la partida disminuyendo una vida al ganador",
-                    resultDb: result
+                    resultDb: result, 
+                    dataSend: dataSend
                 });
             })
             .catch(err => {
@@ -167,6 +191,32 @@ exports.conocerGanador = (req, res, next ) => {
                     message:"Hubo un problema al actualizar la partida", 
                     error: err
                 });
+            });
+        }else if(match.estadoActual == "seguirVotRep") {
+            let validationE = gestPoderes.poderEleccionRep(match.jugadores, dataSend.ganador);
+            if(validationE){
+                partidaInGame.findOneAndUpdate({_id: match._id}, match)
+                .then(matchModified => {
+                    res.status(200).json({
+                        message: "Se logro actualizar la partida y se añadio el el rol de representante al jugador con email: " + dataSend.ganador.toString(),
+                        matchModified: matchModified
+                    }); 
+                })
+                .catch(err => {
+                    res.status(404).json({
+                        message: "Hubo un problema al actualizar la partida", 
+                        error: err
+                    });
+                });
+            }else{
+                res.status(404).json({
+                    message: "Hubo un problema al asignar el rol de representante a " + dataSend.ganador.toString()
+                });
+            }
+        }else{
+            res.status(404).json({
+                message: "No se logro definir el estado actual o no han votado por nadie, no se tomara accion sobre el evento", 
+                dataSend: dataSend
             });
         }    
 

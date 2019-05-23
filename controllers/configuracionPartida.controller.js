@@ -115,7 +115,8 @@ exports.unirJugador = (req, res, next) => {
                     hasVoted: false, 
                     powerUsed: false, 
                     powerUsedDescription: false,
-                    nombreCarta: "noSet", 
+                    nombreCarta: "noSet",
+                    nombreCarta2: "noSet", 
                     descripcionCarta: "noSet"
                 };
                 match.jugadores.push(userPush);
@@ -131,15 +132,72 @@ exports.unirJugador = (req, res, next) => {
                     });
                 });
             }else{
-                res.status(404).json({
-                    message: "No se logro encontrar el jugador para unirse a la partida", 
-                    error: ""
+                const jugador = new Jugador({
+                    nombre: req.body.nombre, 
+                    apellido: req.body.apellido,
+                    sexo: req.body.sexo,
+                    edad: req.body.edad,
+                    email: req.body.email,
+                    carrera: req.body.carrera,
+                    semestre: req.body.semestre,
+                    motivacion: req.body.motivacion,
+                    pensamiento: req.body.pensamiento,
+                    amplitud: req.body.amplitud,
+                    orientacion: req.body.orientacion,
+                    inteligencia: req.body.inteligencia,
+                    innovacion: req.body.innovacion,
+                    tiempoRespuesta: req.body.tiempoRespuesta,
+            
+                });
+            
+                jugador.save().then(user => {
+                    if(user != undefined){
+                        let userPush = {
+                            nombre: user.nombre, 
+                            email: user.email,
+                            vida: 1, 
+                            protected: false, 
+                            beenPostulated: false, 
+                            hasPostulated: false, 
+                            idea: "none",
+                            postuloIdeaJuicio: false, 
+                            votesAgainst: 0, 
+                            hasVoted: false, 
+                            powerUsed: false, 
+                            powerUsedDescription: false,
+                            nombreCarta: "noSet",
+                            nombreCarta2: "noSet",  
+                            descripcionCarta: "noSet"
+                        };
+                        match.jugadores.push(userPush);
+                        partidaInGame.findOneAndUpdate({codigo: _codigo}, match).then(result => {
+                            res.status(200).json({
+                                message:"Se logro añadir y crear jugador a la partida", 
+                                result: result
+                            });
+                        }).catch(err => {
+                            res.status(404).json({
+                                message: "Hubo un problema al guardar la partida", 
+                                error: err
+                            });
+                        });
+                    }else{
+                        res.status(404).json({
+                            message: "El jugador creado no es valido", 
+                            error: ""
+                        });
+                    }
+                }).catch(err => {
+                    res.status(404).json({
+                        message: "Hubo un error al guardar el jugador en la DB", 
+                        error: err
+                    });
                 });
             }
-            }).catch(err => {
+            }).catch(error => {
                 res.status(404).json({
-                    message: "Hubo un problema al encontrar al jugador", 
-                    error: err
+                    message:"Hubo un error el encontrar el jugador", 
+                    error: error
                 });
             });
 
@@ -219,7 +277,6 @@ partidaInGame.findOne({codigo: _codigo})
 });
 
 }
-
 
 
 /**

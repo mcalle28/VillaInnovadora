@@ -35,6 +35,24 @@ jugadores.forEach(element => {
 return validate;
 }
 
+gestPoderes.poderEleccionRep = function(jugadores, ganador){
+    let validate = false;
+    
+    jugadores.forEach(element => {
+        try {
+            if(element.email == ganador.email){
+                element.nombreCarta2 = "Representante Empresarial";
+                element.descripcionCarta2 = "Es un cargo elegido por los actores del ecosistema para ser ru representante y defender sus intereses. Se convierte en un actor desicivo para la " + 
+                "toma de desiciones dificiles.";
+            }
+                validate = true;  
+        } catch (error) {
+            console.log(error);
+        }
+    });
+    return validate;
+}
+
 gestPoderes.poderMentor = function(jugadores, jugadorAConocer, jugadorMentor){
 let fetchedPlayer;
 let validateMentor = false;

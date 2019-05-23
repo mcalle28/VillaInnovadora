@@ -19,6 +19,7 @@ return validation;
 gestSync.creaticidasHanVotado = function(jugadores){
     let validation = false;
     let contCreaticidas = 0;
+    //Ignorar el nombre postulated , se refiere a votaciones
     let contHasPostulated = 0;
     jugadores.forEach(e => {
         if(e.nombreCarta == "Creaticida"){
@@ -33,6 +34,24 @@ gestSync.creaticidasHanVotado = function(jugadores){
         validation = true;
     }
 
+    return validation;
+}
+
+gestSync.todosHanVotado = function(jugadores){
+    let validation = false;
+    let contPlayers = 0;
+    let playersThatVoted = 0;
+
+    jugadores.forEach(e => {
+        contPlayers = contPlayers + 1;
+        if(e.hasVoted == true){
+            playersThatVoted = playersThatVoted +1 ;
+        }
+    });
+
+    if(contPlayers == playersThatVoted){
+        validation = true;
+    }
     return validation;
 }
 

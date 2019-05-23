@@ -33,12 +33,15 @@ router.post("/accionIndeciso", syncManagment.accionIndeciso);
 router.post("/seguirAccionIndeciso", syncManagment.seguirAccionIndeciso);
 router.post("/accionMentor", syncManagment.accionMentor);
 router.post("/seguirAccionMentor", syncManagment.seguirAccionMentor);
-router.post("/postulacionCreaticidas", syncManagment.postulacionCreaticidas);
 router.post("/accionCreaticidas", syncManagment.votacionCreaticidas);
 router.post("/accionEstado", syncManagment.accionEstado);
 router.post("/seguirAccionEstado", syncManagment.seguirAccionEstado);
 
 router.post("/seguirTransicionADia", syncManagment.transicionADia);
+
+router.post("/postulacionRep", syncManagment.postulacionRep);
+router.post("/votacionRep", syncManagment.votacionRep);
+router.post("/seguirVotRep", syncManagment.seguirVotacionRep);
 
 
 
