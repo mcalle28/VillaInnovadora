@@ -22,8 +22,11 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
+    "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "html": "^1.0.0",
     "mongoose": "^5.4.19",
-    "mongoose-unique-validator": "^2.0.3"
+    "mongoose-unique-validator": "^2.0.3",
+    "path": "^0.12.7"
   }
 }

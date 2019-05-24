@@ -19,10 +19,8 @@ mongoose.connect("mongodb+srv://webApi:IxjpYbyed6de8WrC@clustervillainnovadora-t
     .catch((error) => {
         console.log('Error al conectarse a Base de Datos')
         console.log(error);
-    });
-
+});
 process.env.PORT = process.env.PORT || 8000;
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -34,7 +32,7 @@ app.use(confMatchRoute);
 app.use(userManagmentRoute);
 app.use(votesManagmentRoute);
 
-options = { "origin": "*", "methods": "GET,POST", "allowedHeaders": ["Origin", "X-Requested-With", "Content-Type", "Accept"], "credentials": true }
+options = { "origin": "*", "methods": "GET,POST,OPTIONS", "allowedHeaders": ["Origin", "X-Requested-With", "Content-Type", "Accept","X-Access-Token","X-Application-Name","X-Request-Sent-Time"], "credentials": true }
 app.use(cors(options));
 
 app.listen(process.env.PORT, () => {
