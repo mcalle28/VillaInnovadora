@@ -45,8 +45,4 @@ router.post("/seguirVotRep", syncManagment.seguirVotacionRep);
 router.post("/votacionJuicio", syncManagment.votacionJuicio);
 router.post("/postulacionJuicio", syncManagment.postulacionJuicio);
 
-router.get("/", (req, res) => {
-    res.send("<h1>¡Server Villa Innovadora!</h1>");
-});
-
 module.exports = router;

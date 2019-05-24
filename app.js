@@ -31,6 +31,11 @@ app.set("view engine", "ejs");
 app.use(confMatchRoute);
 app.use(userManagmentRoute);
 app.use(votesManagmentRoute);
+app.use(express.static(__dirname + '/client/'));
+
+app.get("/", (req, res) => {
+    res.sendfile(__dirname + '/client/index.html');
+});
 
 options = { "origin": "*", "methods": "GET,POST,OPTIONS", "allowedHeaders": ["Origin", "X-Requested-With", "Content-Type", "Accept","X-Access-Token","X-Application-Name","X-Request-Sent-Time"], "credentials": true }
 app.use(cors(options));
