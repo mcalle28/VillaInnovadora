@@ -65,3 +65,41 @@ exports.obtenerPersonaje = (req, res , next) => {
     });
 
 }
+
+exports.llenarEncuesta = (req, res, next) => {
+    let email = req.body.email;
+    Jugador.findOne({email: email})
+    .then(user => {
+        user.sexo = req.body.sexo;
+        user.edad = req.body.edad;
+        user.carrera = req.body.carrera;
+        user.semestre = req.body.semestre;
+        user.motivacion = req.body.motivacion;
+        user.pensamiento = req.body.pensamiento;
+        user.amplitud = req.body.amplitud;
+        user.orientacion = req.body.orientacion;
+        user.inteligencia = req.body.inteligencia;
+        user.innovacion = req.body.innovacion;
+        user.tiempoRespuesta = req.body.tiempoRespuesta;
+
+        Jugador.findOneAndUpdate({email: email}, user)
+        .then(userModified => {
+            res.status(200).json({
+                message: "Se logro actualizar al jugador con los datos enviados",
+                userModified: userModified
+            });
+        })
+        .catch(err => {
+            res.status(404).json({
+                message: "Hubo un error al actualizar al jugador con los datos",
+                error: err
+            });
+        });
+    })
+    .catch(err => {
+        res.status(404).json({
+            message:"Hubo un problema al encontrar al jugador", 
+            error: err
+        });
+    });
+}

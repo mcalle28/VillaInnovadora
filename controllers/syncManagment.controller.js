@@ -1,7 +1,6 @@
 const partidaInGame = require("../modelsDB/partidaInGame");
 const gestSync = require("../Scripts/gestionSync");
 const gestPoderes = require("../Scripts/gestionPoderes");
-const Jugador = require("../modelsDB/jugador");
 
 /**
  * Busca una partida y utiliza un script sobre el arreglo de jugadores para encontrar si esta el indeciso, donde al encontrarlo le asigna el rol dependiendo de
