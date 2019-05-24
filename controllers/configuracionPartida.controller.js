@@ -15,10 +15,6 @@ const gestCartas = require("../Scripts/gestionCartas");
  * Output: message(mensaje de exito o error), nuevoCodigo(solo aparece en exito), debug(Informacion sobre el resultado al guardar en la db)
  */
 exports.crearPartida = (req, res, next ) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     let nuevoCodigo = gestPartidas.generarCodigo();
     partidaInGame.findOne({ codigo: nuevoCodigo }).then(match => {
 
