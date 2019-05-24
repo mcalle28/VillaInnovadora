@@ -33,6 +33,7 @@ exports.crearPartida = (req, res, next ) => {
             eventoSecuenciaActual: -1
         });
         partidaSave.save().then(result => {
+            res.writeHead(200, {'Access-Control-Allow-Origin': '*'});
             res.status(200).json({
                 message: "Se va a crear la partida",
                 nuevoCodigo: nuevoCodigo, 
