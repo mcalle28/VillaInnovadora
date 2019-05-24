@@ -22,22 +22,14 @@ mongoose.connect("mongodb+srv://webApi:IxjpYbyed6de8WrC@clustervillainnovadora-t
     });
 
 process.env.PORT = process.env.PORT || 8000;
-app.use(cors({credentials: true, origin: true}));
+
+options = { "origin": "*", "methods": "GET,POST", "allowedHeaders": ["Origin", "X-Requested-With", "Content-Type", "Accept"], "credentials": true }
+app.use(cors(options));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 
-app.all('*', function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://villawebgl.s3-website.us-east-2.amazonaws.com');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    if ('OPTIONS' == req.method) {
-    res.sendStatus(200);
-    } else {
-      next();
-    }
-  });
 //Rutas
 app.use(confMatchRoute);
 app.use(userManagmentRoute);
