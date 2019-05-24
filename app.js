@@ -1,7 +1,7 @@
 var express = require("express"),
     bodyParser = require("body-parser"),
     mongoose = require("mongoose"),
-    cors = require("cors"),
+    cors = require('cors'),
     confMatchRoute = require("./routes/rutasConfiguracionPartida"),
     userManagmentRoute = require("./routes/rutasUserManagment"),
     votesManagmentRoute = require("./routes/rutasVotesManagment"),
