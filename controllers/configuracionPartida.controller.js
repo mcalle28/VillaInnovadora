@@ -15,7 +15,6 @@ const gestCartas = require("../Scripts/gestionCartas");
  * Output: message(mensaje de exito o error), nuevoCodigo(solo aparece en exito), debug(Informacion sobre el resultado al guardar en la db)
  */
 exports.crearPartida = (req, res, next ) => {
-
     let nuevoCodigo = gestPartidas.generarCodigo();
     partidaInGame.findOne({ codigo: nuevoCodigo }).then(match => {
 
