@@ -22,7 +22,7 @@ mongoose.connect("mongodb+srv://webApi:IxjpYbyed6de8WrC@clustervillainnovadora-t
     });
 
 process.env.PORT = process.env.PORT || 8000;
-app.use(cors);
+//app.use(cors);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + "/public"));
