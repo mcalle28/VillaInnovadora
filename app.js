@@ -1,7 +1,6 @@
 var express = require("express"),
     bodyParser = require("body-parser"),
     mongoose = require("mongoose"),
-    crearRoute = require("./routes/crearPartida"),
     confMatchRoute = require("./routes/rutasConfiguracionPartida"),
     userManagmentRoute = require("./routes/rutasUserManagment"),
     votesManagmentRoute = require("./routes/rutasVotesManagment"),
@@ -28,7 +27,6 @@ app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 
 //Rutas
-app.use(crearRoute);
 app.use(confMatchRoute);
 app.use(userManagmentRoute);
 app.use(votesManagmentRoute);

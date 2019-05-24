@@ -138,7 +138,7 @@ factoryCard = function(tipo, player){
 }
 
 emprededorSocial = function(player) {
-    player.nombreCarta = "Emprededor Social";
+    player.nombreCarta = "Aliado Emprededor Social";
     player.descripcionCarta = "Es cercano a la comunidad desinteresado y solidario," + 
     "a veces ingenuo. Su motivación principal no es el dinero, sino el bienestar" +
     "de su comunidad.";
@@ -146,14 +146,14 @@ emprededorSocial = function(player) {
 }
 
 emprededorCultural= function(player) {
-    player.nombreCarta = "Emprededor Cultural";
+    player.nombreCarta = "Aliado Emprededor Cultural";
     player.descripcionCarta = "Tiene muchas ideas novedosas y habilidades artísticas." + 
     " Le gusta la vida bohemia y vestirse de forma original.";
     return player;  
 }
 
 emprededorTecnologico = function(player) {
-    player.nombreCarta = "Emprededor Tecnológicol";
+    player.nombreCarta = "Aliado Emprededor Tecnológicol";
     player.descripcionCarta = "Gracias a su ingenio, fortalezas, técnicas y conocimiento es capaz " + 
     "de sacar adelante sus ideas y enfrentar con éstas incluso a las multinacionales.";
     player.vida = player.vida + 1;
@@ -161,7 +161,7 @@ emprededorTecnologico = function(player) {
 }
 
 emprededorTradicional = function(player) {
-    player.nombreCarta = "Emprededor Tradicional";
+    player.nombreCarta = "Aliado Emprededor Tradicional";
     player.descripcionCarta = "Es nuy apreciado porque es leal, optimista, comunicativo y luchador." + 
     " Nunca intenta dañar a nadie. No tiene ideas novedosas, pero es muy trabajador; no le " +
     " importa extender su jornada laboral más allá de las ocho horas.";
@@ -176,7 +176,7 @@ networker = function(player){
 }
 
 mentor = function(player){
-    player.nombreCarta = "Mentor";
+    player.nombreCarta = "Aliado Mentor";
     player.descripcionCarta = "Es un personaje curtido en muchas batallas, respetado por su experiencia y trabajo. Es confiable de el se puede aprender.";
     return player;
 }
@@ -195,7 +195,7 @@ innovador = function(player){
 }
 
 emprendedorIndeciso= function (player){
-    player.nombreCarta = "Emprendedor Indeciso";
+    player.nombreCarta = "Aliado Emprendedor Indeciso";
     player.descripcionCarta = "Alguien con el potencial para emprender, pero no confia en si mismo";
     return player;
 }
@@ -208,7 +208,7 @@ representanteEmpresarial = function(player){
 }
 
 estado = function(player){
-    player.nombreCarta = "Estado";
+    player.nombreCarta = "Aliado Estado";
     player.descripcionCarta = "Puede apoyar con recursos un a un emprendedor y facilitar sus logros o hacer muy dificil su exito por medio de la burocracia los impuestos y los" + 
     "tramites excecivos.";
     return player;

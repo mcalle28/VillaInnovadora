@@ -25,7 +25,7 @@ gestSync.creaticidasHanVotado = function(jugadores){
         if(e.nombreCarta == "Creaticida"){
             contCreaticidas = contCreaticidas + 1;
         }
-        if(e.hasVoted == true){
+        if(e.hasVoted == true && e.nombreCarta == "Creaticida"){
             contHasPostulated = contHasPostulated + 1;
         }
     });
@@ -43,9 +43,11 @@ gestSync.todosHanVotado = function(jugadores){
     let playersThatVoted = 0;
 
     jugadores.forEach(e => {
-        contPlayers = contPlayers + 1;
-        if(e.hasVoted == true){
+        if(e.email != "deadPlayer" ){
+            contPlayers = contPlayers + 1;
+            if(e.hasVoted == true){
             playersThatVoted = playersThatVoted +1 ;
+            }
         }
     });
 
@@ -73,18 +75,18 @@ gestSync.condicionesParaGanar = function(jugadores){
             }
         }
         let getEmp = element.nombreCarta.split(" ")[0];
-        if(getEmp == "Emprededor"){
+        if(getEmp == "Aliado"){
             contEmp = contEmp +1;
             if(element.vida <= 0){
                 deatEmp = deatEmp + 1;
             }
         }
     });
-    if(contCreaticidas = deatCreat){
+    if(contCreaticidas == deatCreat){
         validation.pass = true;
         validation.ganador = "Emprendedores";
         return validation;
-    }else if(contEmp = deatEmp){
+    }else if(contEmp == deatEmp){
         validation.pass = true;
         validation.ganador = "Creaticidas";
         return validation;

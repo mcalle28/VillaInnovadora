@@ -10,7 +10,7 @@ let validate = false;
 
 jugadores.forEach(element => {
     try {
-        if(element.nombreCarta == "Emprendedor Indeciso"){
+        if(element.nombreCarta == "Aliado Emprendedor Indeciso"){
             if(desicion == "Creaticida"){
             element.nombreCarta = "Creaticida";
             element.descripcionCarta = "Son actores del ecosistema con poder, desconfiados y egoistas. Es dificil identificarlos porque se mueven en la sombra y agreden sin mostrar la cara" + 
@@ -18,7 +18,7 @@ jugadores.forEach(element => {
             element.powerUsed = true;
             element.powerUsedDescription = "Poder usado para ser creaticida";
             }else{
-                element.nombreCarta = "Emprededor Social";
+                element.nombreCarta = "Aliado Emprededor Social";
                 element.descripcionCarta = "Es cercano a la comunidad desinteresado y solidario," + 
                 "a veces ingenuo. Su motivación principal no es el dinero, sino el bienestar" +
                 "de su comunidad.";
@@ -88,7 +88,6 @@ gestPoderes.poderEstado = function(jugadores, jugadorEstado, jugadorABuscar, des
             validateEstado = true;
             }else{
             e.powerUsed = true;
-            e.vida = e.vida - 1;
             e.powerUsedDescription = "Uso el poder para desmotivar"
             validateEstado = true;    
             }

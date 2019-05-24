@@ -117,7 +117,8 @@ exports.unirJugador = (req, res, next) => {
                     powerUsedDescription: false,
                     nombreCarta: "noSet",
                     nombreCarta2: "noSet", 
-                    descripcionCarta: "noSet"
+                    descripcionCarta: "noSet", 
+                    descripcionCarta2: "noSet",
                 };
                 match.jugadores.push(userPush);
                 partidaInGame.findOneAndUpdate({codigo: _codigo}, match).then(result => {

@@ -177,6 +177,11 @@ exports.conocerGanador = (req, res, next ) => {
                     element.hasPostulated = false; 
                     element.powerUsed = false;
                 }
+                if(element.vida == 0){
+                    element.nombreCarta = "deadPlayer", 
+                    element.email = "deadPlayer", 
+                    element.nombreCarta2 = "deadPLayer"
+                }
             });
             partidaInGame.findOneAndUpdate({_id: match._id}, match)
             .then(result => {
@@ -193,6 +198,15 @@ exports.conocerGanador = (req, res, next ) => {
                 });
             });
         }else if(match.estadoActual == "seguirVotRep") {
+            match.jugadores.forEach(element => {
+                if(element.email == dataSend.ganador.email){
+                    element.powerUsed = false;
+                }
+                element.votesAgainst = 0;
+                element.beenPostulated = false;
+                element.hasVoted = false;
+                element.hasPostulated = false; 
+            });
             let validationE = gestPoderes.poderEleccionRep(match.jugadores, dataSend.ganador);
             if(validationE){
                 partidaInGame.findOneAndUpdate({_id: match._id}, match)

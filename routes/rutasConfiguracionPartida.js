@@ -37,12 +37,16 @@ router.post("/accionCreaticidas", syncManagment.votacionCreaticidas);
 router.post("/accionEstado", syncManagment.accionEstado);
 router.post("/seguirAccionEstado", syncManagment.seguirAccionEstado);
 
-router.post("/seguirTransicionADia", syncManagment.transicionADia);
+router.post("/seguirTransicion", syncManagment.transicion);
 
 router.post("/postulacionRep", syncManagment.postulacionRep);
 router.post("/votacionRep", syncManagment.votacionRep);
 router.post("/seguirVotRep", syncManagment.seguirVotacionRep);
+router.post("/votacionJuicio", syncManagment.votacionJuicio);
+router.post("/postulacionJuicio", syncManagment.postulacionJuicio);
 
-
+router.get("/", (req, res) => {
+    res.send("<h1>¡Server Villa Innovadora!</h1>");
+});
 
 module.exports = router;
