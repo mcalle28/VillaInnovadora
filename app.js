@@ -23,8 +23,7 @@ mongoose.connect("mongodb+srv://webApi:IxjpYbyed6de8WrC@clustervillainnovadora-t
 
 process.env.PORT = process.env.PORT || 8000;
 
-options = { "origin": "*", "methods": "GET,POST", "allowedHeaders": ["Origin", "X-Requested-With", "Content-Type", "Accept"], "credentials": true }
-app.use(cors(options));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + "/public"));
@@ -35,6 +34,8 @@ app.use(confMatchRoute);
 app.use(userManagmentRoute);
 app.use(votesManagmentRoute);
 
+options = { "origin": "*", "methods": "GET,POST", "allowedHeaders": ["Origin", "X-Requested-With", "Content-Type", "Accept"], "credentials": true }
+app.use(cors(options));
 
 app.listen(process.env.PORT, () => {
 });
