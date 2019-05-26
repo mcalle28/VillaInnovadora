@@ -191,6 +191,126 @@ exports.seguirAccionMentor = (req, res, next) => {
 
 }
 
+
+exports.accionEstadoSalvar = (req, res, next) => {
+
+    let _codigo = req.body.codigo;
+    let _desicion = req.body.desicion;
+    let _jugadorABuscar = req.body.jugadorABuscar;
+    let _jugadorEstado = req.body.jugadorEstado;
+    
+    partidaInGame.findOne({codigo: _codigo})
+    .then(match => {
+        if(_desicion == "si"){
+            let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorAConocer, "salvar");
+            console.log(validation);
+            if(validation != undefined){
+            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 2;
+            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+            partidaInGame.findOneAndUpdate({_id: match._id}, match)
+            .then(result => {
+                res.status(200).json({
+                    message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
+                    jugador: validation,
+                    resultDb: result
+                });
+            })
+            .catch(err => {
+                res.status(404).json({
+                    message: "Hubo un problema al actualizar la partida", 
+                    error: err
+                });
+         });
+        }else{
+            res.status(404).json({
+                message: "Hubo un problema al usar el poder del estado"
+            });
+        }
+        }else{
+            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+            .then(result => {
+                res.status(200).json({
+                    message: "Se logro actualizar el jugador y la partida con el siguiente evento, el estado no quiso salvar", 
+                    resultDb: result
+                });
+            })
+            .catch(err => {
+                res.status(404).json({
+                    message: "Hubo un problema al actualizar la partida", 
+                    error: err
+                });
+         });  
+        }
+    })
+    .catch(err => {
+        res.status(404).json({
+            message: "Hubo un error al encontrar la partida"
+        });
+    });
+
+}
+
+exports.accionEstadoDesmotivar = (req, res, next) => {
+
+    let _codigo = req.body.codigo;
+    let _desicion = req.body.desicion;
+    let _jugadorABuscar = req.body.jugadorABuscar;
+    let _jugadorEstado = req.body.jugadorEstado;
+
+    partidaInGame.findOne({codigo: _codigo})
+    .then(match => {
+        if(_desicion == "si"){
+            let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorAConocer, "desmotivar");
+            if(validation != undefined){
+            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+            partidaInGame.findOneAndUpdate({_id: match._id}, match)
+            .then(result => {
+                res.status(200).json({
+                    message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
+                    jugador: validation,
+                    resultDb: result
+                });
+            })
+            .catch(err => {
+                res.status(404).json({
+                    message: "Hubo un problema al actualizar la partida", 
+                    error: err
+                });
+         });
+        }else{
+            res.status(404).json({
+                message: "Hubo un problema al usar el poder del estado"
+            });
+        }
+        }else{
+            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+            .then(result => {
+                res.status(200).json({
+                    message: "Se logro actualizar el jugador y la partida con el siguiente evento, el estado no quiso desmotivar", 
+                    resultDb: result
+                });
+            })
+            .catch(err => {
+                res.status(404).json({
+                    message: "Hubo un problema al actualizar la partida", 
+                    error: err
+                });
+         });  
+        }
+    })
+    .catch(err => {
+        res.status(404).json({
+            message: "Hubo un error al encontrar la partida"
+        });
+    });
+
+}
+
 /**
  * Busca una partida y al jugador que quiera conocer dependiendo de la desicion le da una vida o le quita una, ademas el jugador estado se le ponen
  * variables de uso de poder.

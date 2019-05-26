@@ -34,7 +34,12 @@ router.post("/seguirAccionIndeciso", syncManagment.seguirAccionIndeciso);
 router.post("/accionMentor", syncManagment.accionMentor);
 router.post("/seguirAccionMentor", syncManagment.seguirAccionMentor);
 router.post("/accionCreaticidas", syncManagment.votacionCreaticidas);
-router.post("/accionEstado", syncManagment.accionEstado);
+//On testing
+//router.post("/accionEstado", syncManagment.accionEstado);
+router.post("/accionEstadoSalvar", syncManagment.accionEstadoSalvar);
+router.post("/accionEstadoDesmotivar", syncManagment.accionEstadoDesmotivar);
+
+
 router.post("/seguirAccionEstado", syncManagment.seguirAccionEstado);
 
 router.post("/seguirTransicion", syncManagment.transicion);
