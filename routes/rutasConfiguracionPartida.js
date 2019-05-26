@@ -27,6 +27,8 @@ router.post("/asignarRol", confMatchController.asignarRol);
 router.post("/obtenerJugadores", confMatchController.obtenerJugadores);
 router.post("/conseguirEventoActual", confMatchController.conseguirEventoActual);
 router.post("/obtenerDesmotivados", confMatchController.obtenerDesmotivados);
+router.post("/obtenerVivos", confMatchController.obtenerVivos);
+
 
 //Gestion de ejecucion
 router.post("/accionIndeciso", syncManagment.accionIndeciso);

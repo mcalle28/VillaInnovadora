@@ -278,6 +278,36 @@ partidaInGame.findOne({codigo: _codigo})
 
 }
 
+exports.obtenerVivos = (req, res, next) => {
+
+    let _codigo = req.body.codigo;
+    
+    partidaInGame.findOne({codigo: _codigo})
+    .then(match => {
+        let vivos = [];
+        match.jugadores.forEach(element => {
+            if(element.vida > 0){
+                vivos.push(element);
+            }
+        });
+        if(desmotivados.length > 0){
+            res.status(200).json({
+                message: "Se encontraron vivos en la partida", 
+                desmotivados: vivos
+            });
+        }else{
+            res.status(200).json({
+                message: "No se encontro ningun vivos en la partida"
+            });
+        }
+    })
+    .catch(err => {
+        res.status(404).json({
+            message: "Hubo un problema al encontrar la partida", 
+            error: err
+        });
+    });
+}
 
 /**
  * Busca una partida, coge la lista de jugadores  y modifica en la coleccion de estos el nombreCarta y descripcionCarta.
