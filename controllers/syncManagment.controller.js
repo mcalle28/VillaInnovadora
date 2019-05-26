@@ -731,7 +731,9 @@ exports.transicion = (req, res, next) => {
         
             match.jugadores.forEach(e => {
                 if(e.nombreCarta2 == "Aliado Representante Empresarial"){
-                    _validateRep = true;
+                    if(match.secuenciaDia.indexOf("seguirVotRep") > -1){
+                        _validateRep = true;
+                    }
                 }
             });
 

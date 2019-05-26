@@ -202,6 +202,11 @@ exports.conocerGanador = (req, res, next ) => {
                 if(element.email == dataSend.ganador.email){
                     element.powerUsed = false;
                 }
+                if(element.vida == 0){
+                    element.nombreCarta = "deadPlayer", 
+                    element.email = "deadPlayer", 
+                    element.nombreCarta2 = "deadPLayer"
+                }
                 element.votesAgainst = 0;
                 element.beenPostulated = false;
                 element.hasVoted = false;
