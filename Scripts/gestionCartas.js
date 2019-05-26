@@ -153,7 +153,7 @@ emprededorCultural= function(player) {
 }
 
 emprededorTecnologico = function(player) {
-    player.nombreCarta = "Aliado Emprededor Tecnológicol";
+    player.nombreCarta = "Aliado Emprededor Tecnológico";
     player.descripcionCarta = "Gracias a su ingenio, fortalezas, técnicas y conocimiento es capaz " + 
     "de sacar adelante sus ideas y enfrentar con éstas incluso a las multinacionales.";
     player.vida = player.vida + 1;

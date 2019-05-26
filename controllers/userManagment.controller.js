@@ -54,7 +54,8 @@ exports.obtenerPersonaje = (req, res , next) => {
         let personaje = gestUser.conseguirPersonaje(match.jugadores, _nombreA);
           res.status(200).json({
               message: "Se logro entronctrar el jugador", 
-              rol: personaje
+              rol: personaje.nombreCarta,
+              descripcion: personaje.descripcionCarta
           });
     })
     .catch(err =>{
