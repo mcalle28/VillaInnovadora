@@ -21,5 +21,6 @@ router.post("/postulacionPropia", votesController.postulacionPropia);
 router.post("/obtenerPostulado", votesController.obtenerPostulado);
 router.post("/addVotoAPersona", votesController.addVotoPersona);
 router.post("/conocerGanador", votesController.conocerGanador);
+router.post("/conocerGanadorSinAccion", votesController.conocerGanadorSinAccion);
 
 module.exports = router;
