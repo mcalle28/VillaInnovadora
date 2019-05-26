@@ -162,7 +162,7 @@ emprededorTecnologico = function(player) {
 
 emprededorTradicional = function(player) {
     player.nombreCarta = "Aliado Emprededor Tradicional";
-    player.descripcionCarta = "Es nuy apreciado porque es leal, optimista, comunicativo y luchador." + 
+    player.descripcionCarta = "Es muy apreciado porque es leal, optimista, comunicativo y luchador." + 
     " Nunca intenta dañar a nadie. No tiene ideas novedosas, pero es muy trabajador; no le " +
     " importa extender su jornada laboral más allá de las ocho horas.";
     return player;  
@@ -177,52 +177,52 @@ networker = function(player){
 
 mentor = function(player){
     player.nombreCarta = "Aliado Mentor";
-    player.descripcionCarta = "Es un personaje curtido en muchas batallas, respetado por su experiencia y trabajo. Es confiable de el se puede aprender.";
+    player.descripcionCarta = "Es un personaje curtido en muchas batallas, respetado por su experiencia y trabajo. Es confiable de él se puede aprender.";
     return player;
 }
 
 inversionista = function(player){
     player.nombreCarta = "Inversionista";
-    player.descripcionCarta = "Tiene recursos financieros, es aventurero y ama el riesgo. Le gusta apoyar cualquier proyecto novedoso si le parece atractivo y hacer buenas inversiones";
+    player.descripcionCarta = "Tiene recursos financieros, es aventurero y ama el riesgo. Le gusta apoyar cualquier proyecto novedoso si le parece atractivo y hacer buenas inversiones.";
     return player; 
 }
 
 innovador = function(player){
     player.nombreCarta = "Innovador/Investigador";
     player.descripcionCarta = "Se caracteriza por ser creativo y estudioso. Busca recursos para sus ideas y protege a los miembros de la Villa con su conocimiento, siempre" + 
-    " tiene alguna innovacion en mente o patente en tramite";
+    " tiene alguna innovación en mente o patente en trámite.";
     return player;
 }
 
 emprendedorIndeciso= function (player){
     player.nombreCarta = "Aliado Emprendedor Indeciso";
-    player.descripcionCarta = "Alguien con el potencial para emprender, pero no confia en si mismo";
+    player.descripcionCarta = "Alguien con el potencial para emprender, pero no confía en si mismo.";
     return player;
 }
 
 representanteEmpresarial = function(player){
     player.nombreCarta = "Representante Empresarial";
-    player.descripcionCarta = "Es un cargo elegido por los actores del ecosistema para ser ru representante y defender sus intereses. Se convierte en un actor desicivo para la " + 
-    "toma de desiciones dificiles.";
+    player.descripcionCarta = "Es un cargo elegido por los actores del ecosistema para ser su representante y defender sus intereses. Se convierte en un actor decisivo para la " + 
+    "toma de decisiones dificiles.";
     return player;
 }
 
 estado = function(player){
     player.nombreCarta = "Aliado Estado";
-    player.descripcionCarta = "Puede apoyar con recursos un a un emprendedor y facilitar sus logros o hacer muy dificil su exito por medio de la burocracia los impuestos y los" + 
+    player.descripcionCarta = "Puede apoyar con recursos a un emprendedor y facilitar sus logros o hacer muy dificil su exito por medio de la burocracia los impuestos y los" + 
     "tramites excecivos.";
     return player;
 }
 creaticidas = function(player){
     player.nombreCarta = "Creaticida";
     player.descripcionCarta = "Son actores del ecosistema con poder, desconfiados y egoistas. Es dificil identificarlos porque se mueven en la sombra y agreden sin mostrar la cara" + 
-    ". Matan las iniciativas, atacan los innovadores y cualquiera que compita con ellos; no dudan en eliminar cualquier innovacion que los amenace y lo hacen sin remordimientos.";
+    ". Matan las iniciativas, atacan los innovadores y cualquiera que compita con ellos; no dudan en eliminar cualquier innovación que los amenace y lo hacen sin remordimientos.";
     return player; 
 }
 
 ceoMultinacional = function(player){
     player.nombreCarta = "CEO de multinacional";
-    player.descripcionCarta = "Es un personaje individualista que no conoce la lealtad. Se alia por conveniencia, aunque su interes es ser unico en su territorio."
+    player.descripcionCarta = "Es un personaje individualista que no conoce la lealtad. Se alia por conveniencia, aunque su interes es ser único en su territorio."
     return player;  
 }
 
