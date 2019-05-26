@@ -63,10 +63,7 @@ exports.configurarPartida = (req, res, next) => {
     let _tipoPartida = req.body.tipoPartida;
       partidaInGame.findOne({ codigo: _codigo })
         .then(match => {
-
         let matchSave = gestPartidas.configurarPartidas(match, _tipoPartida);
-        console.log(matchSave);
-
         partidaInGame.findOneAndUpdate({codigo: _codigo}, matchSave).then(result => {
             res.status(200).json({
                 message:"Se logro configurar la partida", 

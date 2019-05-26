@@ -191,7 +191,12 @@ exports.seguirAccionMentor = (req, res, next) => {
 
 }
 
-
+/**
+ * Busca una partida y al jugador que quiera conocer dependiendo de la desicion le da una vida o pasa de evento ademas el jugador estado se le ponen
+ * variables de uso de poder si decide usarlo.
+ * Input: codigo,  jugadorEstado(email),jugadorAConocer(email), desicion("salvar" o "desmotivar")  
+ * Output: message:(exito o error),jugador(exito),resultDb(exito), error(solo si falla, info sobre el error),
+ */
 exports.accionEstadoSalvar = (req, res, next) => {
 
     let _codigo = req.body.codigo;
@@ -251,7 +256,12 @@ exports.accionEstadoSalvar = (req, res, next) => {
     });
 
 }
-
+/**
+ * Busca una partida y al jugador que quiera conocer dependiendo de la desicion le quita una vida o pasa de evento ademas el jugador estado se le ponen
+ * variables de uso de poder si decide usarlo.
+ * Input: codigo,  jugadorEstado(email),jugadorAConocer(email), desicion("salvar" o "desmotivar")  
+ * Output: message:(exito o error),jugador(exito),resultDb(exito), error(solo si falla, info sobre el error),
+ */
 exports.accionEstadoDesmotivar = (req, res, next) => {
 
     let _codigo = req.body.codigo;
@@ -717,13 +727,14 @@ exports.transicion = (req, res, next) => {
             });    
         }else{
             if(desicion == "dia"){
-            var _validateRep = false;
-
+            let _validateRep = false;   
+        
             match.jugadores.forEach(e => {
                 if(e.nombreCarta2 == "Aliado Representante Empresarial"){
                     _validateRep = true;
                 }
             });
+
             //Se añade a la secuencia el representante si no esta y si esta se quita de la secuencia
             if(_validateRep){
             console.log("Se ha quitado de la secuencia la postulacion y votacion del representante");
@@ -751,17 +762,37 @@ exports.transicion = (req, res, next) => {
                 });
             });
         }else if(desicion == "noche"){
-            var _validateIndeciso = false;
+            let _validateIndeciso = false;
+            let _validateEstado = false; 
+            let _validateMentor = false; 
 
             match.jugadores.forEach(e => {
                 if(e.nombreCarta == "Aliado Emprendedor Indeciso"){
-                    _validateIndeciso = true;
+                    if(match.secuenciaNoche.indexOf("llamadoIndeciso") > -1){
+                        _validateIndeciso = true;
+                    }
+                }else if(e.nombreCarta == "Aliado Mentor"){
+                    if(match.secuenciaNoche.indexOf("llamadoMentor") > -1){
+                        _validateMentor = true;
+                    }
+                }else if(e.nombreCarta == "Aliado Estado"){
+                    if(match.secuenciaNoche.indexOf("llamadoEstado") > -1){
+                        _validateEstado = true;
+                    }
                 }
             });
             //Se quita el evento del indeciso si este ya no esta en la partida (uso su rol)
             if(!_validateIndeciso){
             console.log("Se ha quitado de la secuencia los eventos del indeciso");
             match.secuenciaNoche.splice(0,2);
+            }
+            if(!_validateEstado){
+            console.log("Se ha quitado de la secuencia de mentor");
+            matchSave.secuenciaNoche.splice(matchSave.secuenciaNoche.length - 4, 3);
+            }
+            if(!_validateEstado){
+            console.log("Se ha quitado la secuencia de estado");
+            matchSave.secuenciaNoche.splice(matchSave.secuenciaNoche.length - 7, 2);   
             }
             match.tiempo = "Noche";
             match.eventoSecuenciaActual = 0;
