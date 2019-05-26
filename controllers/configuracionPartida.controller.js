@@ -290,7 +290,7 @@ exports.asignarRol = (req, res, next) => {
       partidaInGame.findOne({ codigo: _codigo })
         .then(match => {
             gestCartas.asignarRol(match.jugadores, _tipoPartida);
-
+            match.estadoActual = "rolesAsignados";
             partidaInGame.findOneAndUpdate({_id: match._id}, match)
             .then(result => {
                 res.status(200).json({
