@@ -15,7 +15,7 @@ gestPartidas.configurarPartidas = function(partidas, tipoPartida){
             "llamadoEstado","llamadoEstado1", "accionEstado", "transicion"];
             partidas.secuenciaDia = ["postulacionJuicio", 
             "votacionJuicio", "transicion"];
-            partidas.secuenciaEventoEspecial = ["postulacionEventoEspecial", "votacionEventoEspecial","transicion"];
+            partidas.secuenciaEventoEspecial = ["setTituloYIdeaEventoEspecial", "votacionEventoEspecial","transicion"];
             partidas.eventoSecuenciaActual = partidas.eventoSecuenciaActual + 1;
             partidas.estadoActual = partidas.secuenciaNoche[partidas.eventoSecuenciaActual];
             partidas.tiempo = "Noche";

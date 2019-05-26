@@ -327,45 +327,46 @@ exports.accionEstadoDesmotivar = (req, res, next) => {
  * Input: codigo,  jugadorEstado(email),jugadorAConocer(email), desicion("salvar" o "desmotivar")  
  * Output: message:(exito o error),jugador(exito),resultDb(exito), error(solo si falla, info sobre el error),
  */
-exports.accionEstado = (req, res, next) => {
-    let _codigo = req.body.codigo;
-    let _jugadorAConocer = req.body.jugadorAConocer;
-    let _jugadorEstado = req.body.jugadorEstado;
-    let _desicion = req.body.desicion;
+//Este no se usa por el momento
+// exports.accionEstado = (req, res, next) => {
+//     let _codigo = req.body.codigo;
+//     let _jugadorAConocer = req.body.jugadorAConocer;
+//     let _jugadorEstado = req.body.jugadorEstado;
+//     let _desicion = req.body.desicion;
     
-    partidaInGame.findOne({ codigo: _codigo })
-    .then(match => {
+//     partidaInGame.findOne({ codigo: _codigo })
+//     .then(match => {
     
-            let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorAConocer, _desicion);
-            if(validation != undefined){
-            match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
-            match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
-            partidaInGame.findOneAndUpdate({_id: match._id}, match)
-            .then(result => {
-                res.status(200).json({
-                    message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
-                    jugador: validation,
-                    resultDb: result
-                });
-            })
-            .catch(err => {
-                res.status(404).json({
-                    message: "Hubo un problema al actualizar la partida", 
-                    error: err
-                });
-         });
-        }else{
-            res.status(404).json({
-                message: "Hubo un problema al usar el poder del estado"
-            });
-        }
-    }).catch(err => {
-      res.status(404).json({
-        message: "Hubo un error al encontrar la partida", 
-        error: err
-      });
-    });
-}
+//             let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorAConocer, _desicion);
+//             if(validation != undefined){
+//             match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+//             match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
+//             partidaInGame.findOneAndUpdate({_id: match._id}, match)
+//             .then(result => {
+//                 res.status(200).json({
+//                     message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
+//                     jugador: validation,
+//                     resultDb: result
+//                 });
+//             })
+//             .catch(err => {
+//                 res.status(404).json({
+//                     message: "Hubo un problema al actualizar la partida", 
+//                     error: err
+//                 });
+//          });
+//         }else{
+//             res.status(404).json({
+//                 message: "Hubo un problema al usar el poder del estado"
+//             });
+//         }
+//     }).catch(err => {
+//       res.status(404).json({
+//         message: "Hubo un error al encontrar la partida", 
+//         error: err
+//       });
+//     });
+// }
 
 /**
  * Busca una partida y si el jugador estado ha usado su poder se cambia de evento de lo contrario no se cambia.
@@ -690,6 +691,27 @@ exports.votacionJuicio = (req, res, next) => {
       });
     });
 }
+
+
+exports.setTituloYIdeaEventoEspecial = (req, res, next ) => {
+
+let _codigo = req.body.codigo;
+let _tituloEvento = req.body.titulo;
+let _ideaEvento = req.body.ideaE;
+
+partidaInGame.findOne()
+.then(match => {
+    
+})
+.catch(err => {
+    res.status(404).json({
+        message:"Hubo un error al encontrar la partida", 
+        error: err
+    });
+});
+
+}
+
 
 /**
  * Busca la partida y obtiene los jugadores , cuando el primer equipo llegue a 0 vidas en sus jugadores (creaticidas o emprendedores) se le condedera la victoria

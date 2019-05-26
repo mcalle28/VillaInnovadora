@@ -16,7 +16,8 @@ var jugadorSchema = new mongoose.Schema({
         amplitud: {type: String, require: false, default: "null"},
         orientacion: {type: String, require: false, default: "null"},
         inteligencia: {type: String, require: false, default: "null"},
-        innovacion: {type: String, require: false, default: "null"}, 
+        innovacion: {type: String, require: false, default: "null"},
+        postulaciones: {type:String, require: false}, 
         tiempoRespuesta: {type: Number, require: false, default: 0}
 });
 

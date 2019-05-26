@@ -248,4 +248,23 @@ exports.conocerGanador = (req, res, next ) => {
 
 }
 
+exports.conocerGanadorSinAccion = (req, res, next) => {
+    let codigo = req.body.codigo;
+
+    partidaInGame.findOne()
+    .then(match => {
+      let dataSend = gestVotaciones.conocerGanador(match.jugadores);
+      res.status(200).json({
+          message:"Se logro encontrar al ganador", 
+          data: dataSend
+      });  
+    })
+    .catch(err => {
+        res.status(404).json({
+            message: "Hubo un error al encontrar la partida", 
+            error: err
+        });
+    });
+}
+
 
