@@ -202,7 +202,7 @@ exports.accionEstadoSalvar = (req, res, next) => {
     partidaInGame.findOne({codigo: _codigo})
     .then(match => {
         if(_desicion == "si"){
-            let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorAConocer, "salvar");
+            let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorABuscar, "salvar");
             console.log(validation);
             if(validation != undefined){
             match.eventoSecuenciaActual = match.eventoSecuenciaActual + 2;
@@ -262,7 +262,7 @@ exports.accionEstadoDesmotivar = (req, res, next) => {
     partidaInGame.findOne({codigo: _codigo})
     .then(match => {
         if(_desicion == "si"){
-            let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorAConocer, "desmotivar");
+            let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorABuscar, "desmotivar");
             if(validation != undefined){
             match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
             match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
