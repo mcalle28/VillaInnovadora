@@ -211,13 +211,13 @@ exports.accionEstadoSalvar = (req, res, next) => {
         if(_desicion == "si"){
             let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorABuscar, "salvar");
             console.log(validation);
-            if(validation != undefined){
+            if(validation){
             match.eventoSecuenciaActual = match.eventoSecuenciaActual + 2;
             match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
             partidaInGame.findOneAndUpdate({_id: match._id}, match)
             .then(result => {
                 res.status(200).json({
-                    message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
+                    message: "Se logro actualizar el jugador y la partida con el siguiente evento, el estado decidio salvar", 
                     jugador: validation,
                     resultDb: result
                 });
@@ -275,13 +275,14 @@ exports.accionEstadoDesmotivar = (req, res, next) => {
     .then(match => {
         if(_desicion == "si"){
             let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorABuscar, "desmotivar");
-            if(validation != undefined){
+            console.log(validation);
+            if(validation){    
             match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
             match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
             partidaInGame.findOneAndUpdate({_id: match._id}, match)
             .then(result => {
                 res.status(200).json({
-                    message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
+                    message: "Se logro actualizar el jugador y la partida con el siguiente evento, el estado decidio desmotivar", 
                     jugador: validation,
                     resultDb: result
                 });

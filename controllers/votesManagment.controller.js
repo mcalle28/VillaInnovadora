@@ -179,15 +179,14 @@ exports.conocerGanador = (req, res, next ) => {
                     element.powerUsed = false;
                 }
                 if(element.vida == 0){
-                    element.nombreCarta = "deadPlayer", 
-                    element.email = "deadPlayer", 
+                    element.nombreCarta = "deadPlayer",  
                     element.nombreCarta2 = "deadPLayer"
                 }
             });
             partidaInGame.findOneAndUpdate({_id: match._id}, match)
             .then(result => {
                 res.status(200).json({
-                    message: "Se logro actualizar la partida disminuyendo una vida al ganador",
+                    message: "Se logro actualizar la partida disminuyendo una vida al ganador " + dataSend.ganador.email.toString(),
                     resultDb: result, 
                     dataSend: dataSend
                 });

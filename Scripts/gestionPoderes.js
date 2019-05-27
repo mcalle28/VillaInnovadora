@@ -77,11 +77,8 @@ gestPoderes.poderEstado = function(jugadores, jugadorEstado, jugadorABuscar, des
     let validateEstado = false;
     let validatePlayerMeet = false;
 
-    let fetchedPlayer = undefined;
-
     jugadores.forEach(e => {
         if(e.email == jugadorEstado){
-            fetchedPlayer = e;
             if(desicion == "salvar"){
             e.powerUsed = true;
             e.powerUsedDescription = "Uso el poder para salvar"
@@ -102,12 +99,11 @@ gestPoderes.poderEstado = function(jugadores, jugadorEstado, jugadorABuscar, des
             }
         }
     });
-
-    if(!validateEstado || !validatePlayerMeet){
-        fetchedPlayer = undefined;
+    if(!validateEstado && !validatePlayerMeet){
+        return false;
     }
 
-    return fetchedPlayer;   
+    return true;   
 }
 
 module.exports = gestPoderes;
