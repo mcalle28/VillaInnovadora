@@ -392,18 +392,21 @@ partidaInGame.findOne({ codigo: _codigo })
         .then(result => {
             res.status(200).json({
                 message: "Todos los creaticidas han votado y se cambio el evento",
-                resultDb: result
+                resultDb: result, 
+                shouldPass: true
             });
         })
         .catch(err => {
             res.status(404).json({
                 message: "Hubo un problema al actualizar la partida", 
-                error: err
+                error: err, 
+                shouldPass: false
             });
         });    
     }else{
         res.status(200).json({
             message: "Todavia faltan creaticidas por votar",
+            shouldPass: false
         });
     }
 }).catch(err => {
@@ -483,24 +486,28 @@ exports.votacionRep = (req, res, next) => {
             .then(result => {
                 res.status(200).json({
                     message: "Todos han votado y se cambio el evento",
-                    resultDb: result
+                    resultDb: result, 
+                    shouldPass: true
                 });
             })
             .catch(err => {
                 res.status(404).json({
                     message: "Hubo un problema al actualizar la partida", 
-                    error: err
+                    error: err, 
+                    shouldPass: false
                 });
             });    
         }else{
             res.status(200).json({
                 message: "Todavia faltan jugadores por votar",
+                shouldPass: false
             });
         }
     }).catch(err => {
       res.status(404).json({
         message: "Hubo un error al encontrar la partida", 
-        error: err
+        error: err, 
+        shouldPass: false
       });
     });
 }
@@ -625,24 +632,28 @@ exports.votacionJuicio = (req, res, next) => {
             .then(result => {
                 res.status(200).json({
                     message: "Todos han votado y se cambio el evento",
-                    resultDb: result
+                    resultDb: result, 
+                    shouldPass: true
                 });
             })
             .catch(err => {
                 res.status(404).json({
                     message: "Hubo un problema al actualizar la partida", 
-                    error: err
+                    error: err, 
+                    shouldPass: false
                 });
             });    
         }else{
             res.status(200).json({
                 message: "Todavia faltan jugadores por votar",
+                shouldPass: false
             });
         }
     }).catch(err => {
       res.status(404).json({
         message: "Hubo un error al encontrar la partida", 
-        error: err
+        error: err, 
+        shouldPass: false
       });
     });
 }
