@@ -38,8 +38,6 @@ router.post("/seguirAccionMentor", syncManagment.seguirAccionMentor);
 router.post("/accionCreaticidas", syncManagment.votacionCreaticidas);
 router.post("/accionEstadoSalvar", syncManagment.accionEstadoSalvar);
 router.post("/accionEstadoDesmotivar", syncManagment.accionEstadoDesmotivar);
-
-
 router.post("/seguirAccionEstado", syncManagment.seguirAccionEstado);
 
 router.post("/seguirTransicion", syncManagment.transicion);
@@ -49,5 +47,7 @@ router.post("/votacionRep", syncManagment.votacionRep);
 router.post("/seguirVotRep", syncManagment.seguirVotacionRep);
 router.post("/votacionJuicio", syncManagment.votacionJuicio);
 router.post("/postulacionJuicio", syncManagment.postulacionJuicio);
+
+router.post("/finalizarSinConocerGanador", confMatchController.finalizarPartidaAbrupto);
 
 module.exports = router;

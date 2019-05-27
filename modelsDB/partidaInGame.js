@@ -18,7 +18,6 @@ var partidaSchema = new mongoose.Schema({
         protected: {type: Boolean, require: false},
         beenPostulated: {type: Boolean, require: false},
         hasPostulated: {type: Boolean, require: false},
-        idea: {type: String, require: false},
         postuloIdeaJuicio: {type: Boolean, require: false},
         votesAgainst: {type: Number, require: false},
         hasVoted: {type: Boolean, require: false},
@@ -43,4 +42,4 @@ var partidaSchema = new mongoose.Schema({
 
 partidaSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model("Partida", partidaSchema);
+module.exports = mongoose.model("PartidaInGame", partidaSchema);

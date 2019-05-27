@@ -9,8 +9,7 @@ const gestUser = require("../Scripts/gestionUser");
  */
 exports.createUser = (req, res, next) => {
     const jugador = new Jugador({
-        nombre: req.body.nombre, 
-        apellido: req.body.apellido,
+        nombre: req.body.nombre,
         sexo: req.body.sexo,
         edad: req.body.edad,
         email: req.body.email,
@@ -22,8 +21,9 @@ exports.createUser = (req, res, next) => {
         orientacion: req.body.orientacion,
         inteligencia: req.body.inteligencia,
         innovacion: req.body.innovacion,
+        postulaciones: req.body.postulaciones,
         tiempoRespuesta: req.body.tiempoRespuesta,
-
+        carta: req.body.carta
     });
 
     jugador.save().then(result => {

@@ -21,7 +21,7 @@ gestPartidas.configurarPartidas = function(partidas, tipoPartida){
             partidas.tiempo = "Noche";
             partidas.tipoPartida = tipoPartida;
             console.log("---------------------------------");
-            console.log("Partida: " + _codigo.toString());
+            console.log("Partida: " + partidas.codigo.toString());
             console.log("secuenciaNoche: " );
             console.log(partidas.secuenciaNoche);
             console.log("secuenciaDia: ");
@@ -47,7 +47,7 @@ gestPartidas.configurarPartidas = function(partidas, tipoPartida){
         partidas.tiempo = "Noche";
         partidas.tipoPartida = tipoPartida;
         console.log("---------------------------------");
-        console.log("Partida: " + _codigo.toString());
+        console.log("Partida: " + partidas.codigo.toString());
         console.log("secuenciaNoche: " );
         console.log(partidas.secuenciaNoche);
         console.log("secuenciaDia: ");
@@ -69,7 +69,7 @@ gestPartidas.configurarPartidas = function(partidas, tipoPartida){
             partidas.tiempo = "Noche";
             partidas.tipoPartida = tipoPartida;
             console.log("---------------------------------");
-            console.log("Partida: " + _codigo.toString());
+            console.log("Partida: " + partidas.codigo.toString());
             console.log("secuenciaNoche: " );
             console.log(partidas.secuenciaNoche);
             console.log("secuenciaDia: ");

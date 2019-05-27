@@ -37,8 +37,10 @@ gestVotacion.postularPersona = function(jugadores, jugadorAPostular, jugadorPost
     jugadores.forEach(e => {
         if(e.email = jugadorAPostular){
             e.beenPostulated = true;
+            e.postulaciones = e.postulaciones + 1;
         }else if(e.email = jugadorPostulador){
             e.hasPostulated = true;
+
         }
     });
     }

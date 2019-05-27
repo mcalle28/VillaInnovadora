@@ -53,6 +53,7 @@ partidaInGame.findOne({codigo: _codigo})
     match.jugadores.forEach(e => {
         if(e.email == _jugadorAPostular){
             e.beenPostulated = true;
+            e.postulaciones = e.postulaciones + 1;
             e.hasPostulated = true;
         }
     });

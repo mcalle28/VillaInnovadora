@@ -1,6 +1,8 @@
 const partidaInGame = require("../modelsDB/partidaInGame");
+const Jugador = require("../modelsDB/jugador");
 const gestSync = require("../Scripts/gestionSync");
 const gestPoderes = require("../Scripts/gestionPoderes");
+const partidaEnd = require("../modelsDB/partidaEnd");
 
 /**
  * Busca una partida y utiliza un script sobre el arreglo de jugadores para encontrar si esta el indeciso, donde al encontrarlo le asigna el rol dependiendo de
@@ -320,53 +322,6 @@ exports.accionEstadoDesmotivar = (req, res, next) => {
     });
 
 }
-
-/**
- * Busca una partida y al jugador que quiera conocer dependiendo de la desicion le da una vida o le quita una, ademas el jugador estado se le ponen
- * variables de uso de poder.
- * Input: codigo,  jugadorEstado(email),jugadorAConocer(email), desicion("salvar" o "desmotivar")  
- * Output: message:(exito o error),jugador(exito),resultDb(exito), error(solo si falla, info sobre el error),
- */
-//Este no se usa por el momento
-// exports.accionEstado = (req, res, next) => {
-//     let _codigo = req.body.codigo;
-//     let _jugadorAConocer = req.body.jugadorAConocer;
-//     let _jugadorEstado = req.body.jugadorEstado;
-//     let _desicion = req.body.desicion;
-    
-//     partidaInGame.findOne({ codigo: _codigo })
-//     .then(match => {
-    
-//             let validation = gestPoderes.poderEstado(match.jugadores, _jugadorEstado,_jugadorAConocer, _desicion);
-//             if(validation != undefined){
-//             match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
-//             match.estadoActual = match.secuenciaNoche[match.eventoSecuenciaActual];
-//             partidaInGame.findOneAndUpdate({_id: match._id}, match)
-//             .then(result => {
-//                 res.status(200).json({
-//                     message: "Se logro actualizar el jugador y la partida con el siguiente evento", 
-//                     jugador: validation,
-//                     resultDb: result
-//                 });
-//             })
-//             .catch(err => {
-//                 res.status(404).json({
-//                     message: "Hubo un problema al actualizar la partida", 
-//                     error: err
-//                 });
-//          });
-//         }else{
-//             res.status(404).json({
-//                 message: "Hubo un problema al usar el poder del estado"
-//             });
-//         }
-//     }).catch(err => {
-//       res.status(404).json({
-//         message: "Hubo un error al encontrar la partida", 
-//         error: err
-//       });
-//     });
-// }
 
 /**
  * Busca una partida y si el jugador estado ha usado su poder se cambia de evento de lo contrario no se cambia.
@@ -692,7 +647,11 @@ exports.votacionJuicio = (req, res, next) => {
     });
 }
 
-
+/**
+ * Busca la partida y pone el titulo y el tema del evento especial, ademas añade +1 al evento actual para que se siga a la votacion, este postula a las 3 personas
+ * Input: codigo, tituloEvento, ideaEvento(tema) 
+ * Output: message:(exito o error), resultDb(exito), error(solo si falla, info sobre el error)
+ */
 exports.setTituloYIdeaEventoEspecial = (req, res, next ) => {
 
 let _codigo = req.body.codigo;
@@ -701,7 +660,36 @@ let _ideaEvento = req.body.ideaE;
 
 partidaInGame.findOne()
 .then(match => {
-    
+    match.temaEventoEspecial = _ideaEvento;
+    match.tituloEventoEspecial = _tituloEvento;
+    match.eventoSecuenciaActual = match.eventoSecuenciaActual + 1;
+    match.estadoActual = match.secuenciaEventoEspecial[match.eventoSecuenciaActual];
+
+    let randomNumber = Math.floor(Math.random()*match.jugadores.length);
+    match.jugadores[randomNumber].beenPostulated = true;
+    let aux = randomNumber;
+    while(aux == randomNumber){
+        randomNumber = Math.floor(Math.random()*match.jugadores.length);
+    }
+    match.jugadores[randomNumber].beenPostulated = true;
+    aux = randomNumber;
+    while(aux == randomNumber){
+        randomNumber = Math.floor(Math.random()*match.jugadores.length);
+    }
+    match.jugadores[randomNumber].beenPostulated = true;
+    partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+    .then(result => {
+        res.status(200).json({
+            message: "Se añadio el tema y el titulo para el evento especial, ademas se añadieron 3 jugadores random",
+            resultDb: result
+        });
+    })
+    .catch(err => {
+        res.status(404).json({
+            message: "Hubo un problema al actualizar la partida", 
+            error: err
+        });
+    });
 })
 .catch(err => {
     res.status(404).json({
@@ -730,23 +718,44 @@ exports.transicion = (req, res, next) => {
         let validator = gestSync.condicionesParaGanar(match.jugadores);
         console.log(validator);
         if(validator.pass == true){
+            match.secuenciaDia = [];
+            match.secuenciaNoche = [];
+            match.secuenciaEventoEspecial = [];
             match.eventoSecuenciaActual = -1;
             match.estadoActual = "Partida finalizada";
             match.jugadores = [];
-
-            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+            let jugadoresId = [];
+            Promise.all(match.jugadores.map(rider => {
+                return Jugador.findOne({email: rider.email}).exec();
+            })).then(foundUsers => {
+               let idUsers = foundUsers.map(rider => {
+                   return rider._id;
+               });
+               jugadoresId = idUsers;
+            }).catch(err => {
+                console.log(err);
+                res.send(err);
+            });
+            let partidaToSave = new partidaEnd({
+                codigo: match.codigo, 
+                ganadoresPartida: match.ganadoresPartida,
+                jugadores: jugadoresId,
+                tipoPartida: match.tipoPartida
+            });
+            partidaToSave.save()
             .then(result => {
                 res.status(200).json({
-                    message: "El ganador es: " +  validator.ganador, 
+                    message: "Se logro guardar la partida finalizada", 
                     resultDb: result
                 });
             })
             .catch(err => {
                 res.status(404).json({
-                    message: "Hubo un problema al actualizar la partida", 
+                    message:"Hubo un problema al guardar la partida finalizada",
                     error: err
                 });
-            });    
+            });
+               
         }else{
             if(desicion == "dia"){
             let _validateRep = false;   
@@ -825,6 +834,22 @@ exports.transicion = (req, res, next) => {
             .then(result => {
                 res.status(200).json({
                     message: "Todavia no se encuentra ganador se sigue la partida a Noche", 
+                    resultDb: result
+                });
+            })
+            .catch(err => {
+                res.status(404).json({
+                    message: "Hubo un problema al actualizar la partida",
+                    error: err
+                });
+            });
+        }else if(desicion == "evento"){
+            match.eventoSecuenciaActual = 0;
+            match.estadoActual = match.secuenciaEventoEspecial[match.eventoSecuenciaActual];
+            partidaInGame.findOneAndUpdate({codigo: _codigo}, match)
+            .then(result => {
+                res.status(200).json({
+                    message: "Todavia no se encuentra ganador se inicia el evento especial", 
                     resultDb: result
                 });
             })

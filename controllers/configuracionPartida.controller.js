@@ -143,6 +143,7 @@ exports.unirJugador = (req, res, next) => {
                     orientacion: req.body.orientacion,
                     inteligencia: req.body.inteligencia,
                     innovacion: req.body.innovacion,
+                    postulaciones: req.body.postulaciones,
                     tiempoRespuesta: req.body.tiempoRespuesta,
             
                 });
@@ -345,8 +346,79 @@ exports.asignarRol = (req, res, next) => {
  * Input: (Falta implementar)
  * Output: (Falta implementar)
  */
-exports.finalizarPartida = (req, res, next) => {
-    //Aqui se debe de guardar la db como se desea en un schema diferente que no tenga los datos de las partidas, igualmente con los jugadores
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+//Hay que revisar este metodo porque no esta jugadrando en jugadoresID el id de cada uno 
+exports.finalizarPartidaAbrupto = (req, res, next) => {
+    let codigo = req.body.codigo;
+
+    partidaInGame.findOne({codigo: codigo})
+    .then(match => {
+        match.secuenciaDia = [];
+        match.secuenciaNoche = [];
+        match.secuenciaEventoEspecial = [];
+        match.eventoSecuenciaActual = -1;
+        match.estadoActual = "Partida finalizada";
+        let jugadoresId = [];
+        Promise.all(match.jugadores.map(rider => {
+            let jugadorUpdate = {
+                nombre: rider.nombre,
+                sexo: "noSet", 
+                edad: 0,
+                email: rider.email,
+                carrera: "noSet",
+                semestre: 0,
+                motivacion: 0,
+                pensamiento: 0,
+                amplitud: 0,
+                orientacion: 0,
+                inteligencia: 0,
+                innovacion: 0,
+                carta: rider.nombreCarta,
+                postulaciones: rider.postulaciones, 
+                tiempoRespuesta: 4
+            };
+            return Jugador.findOneAndUpdate({email: rider.email}, jugadorUpdate).exec();
+        })).then(foundUsers => {
+        foundUsers.forEach(e => {
+            console.log(e._id);
+            jugadoresId.push(e._id);
+        });
+        }).catch(err => {
+            console.log(err);
+        });
+        console.log(jugadoresId);
+        match.jugadores = [];
+        let partidaToSave = new partidaEnd({
+            codigo: match.codigo, 
+            ganadoresPartida: match.ganadoresPartida,
+            jugadores: jugadoresId,
+            tipoPartida: match.tipoPartida
+        });
+        console.log(partidaToSave);
+        partidaToSave.save()
+        .then(result => {
+            res.status(200).json({
+                message: "Se logro guardar la partida finalizada", 
+                resultDb: result
+            });
+        })
+        .catch(err => {
+            res.status(404).json({
+                message:"Hubo un problema al guardar la partida finalizada",
+                error: err
+            });
+        });
+    })
+    .catch(err => {
+        res.status(404).json({
+            message: "Hubo un error al encontrar la partida", 
+            error: err
+        });
+    });
 }
 
 /**
