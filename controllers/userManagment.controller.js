@@ -53,7 +53,7 @@ exports.obtenerPersonaje = (req, res , next) => {
         let personaje = gestUser.conseguirPersonaje(match.jugadores, _nombreA);
         console.log(personaje);
           res.status(200).json({
-              message: personaje, 
+              message: "Se encontro el personaje.", 
               rol: personaje.nombreCarta,
               descripcion: personaje.descripcionCarta
           });
