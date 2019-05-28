@@ -6,7 +6,8 @@ const gestUser = {};
  */
 
 gestUser.conseguirPersonaje = function(jugadores, nombreA){
-    let userFetched;
+    let userFetched = {};
+    console.log(jugadores);
     jugadores.forEach(element => {
         if(element.email == nombreA){
             userFetched = element;
@@ -15,4 +16,4 @@ gestUser.conseguirPersonaje = function(jugadores, nombreA){
     return userFetched;
 }
 
-module.exports = {};
+module.exports = gestUser;
