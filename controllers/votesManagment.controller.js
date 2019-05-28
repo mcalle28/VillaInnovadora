@@ -124,13 +124,28 @@ exports.addVotoPersona = (req, res, next) => {
 
     partidaInGame.findOne({codigo: _codigo})
     .then(match => {
+        let userDead = false;
         match.jugadores.forEach(element => {
             if(element.email == _jugadorAVotar){
+                if(element.nombreCarta != "deadPlayer"){
                 element.votesAgainst = element.votesAgainst + 1;
-            }else if(element.email == _jugadorVotante){
-                element.hasVoted = true;
+                if(element.email == _jugadorVotante){
+                    element.hasVoted = true;
+                }
+            }else{
+                userDead = true;
             }
+            }else if(element.email == _jugadorVotante){
+                if(element.nombreCarta != "deadPlayer"){
+                element.hasVoted = true;
+                }else{
+                    userDead = true;
+                }
+            }
+            
         });
+
+    if(!userDead){    
     partidaInGame.findOneAndUpdate({_id: match._id}, match)
     .then(result => {
         res.status(200).json({
@@ -144,6 +159,11 @@ exports.addVotoPersona = (req, res, next) => {
             error: err
         });
     });
+}else{
+    res.status(404).json({
+        message: "El jugador a votar o el jugador votador estan muertos, no se toma accion"
+    });
+}
     })
     .catch(err=> {
         res.status(404).json({
@@ -151,7 +171,7 @@ exports.addVotoPersona = (req, res, next) => {
             error: err
         });
     });
-
+    
 
 }
 
