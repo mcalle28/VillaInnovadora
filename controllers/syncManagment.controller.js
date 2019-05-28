@@ -739,6 +739,7 @@ exports.transicion = (req, res, next) => {
             match.secuenciaEventoEspecial = [];
             match.eventoSecuenciaActual = -1;
             match.estadoActual = "Partida finalizada";
+            match.ganadoresPartida = validator.ganador;
             match.jugadores = [];
             let jugadoresId = [];
             Promise.all(match.jugadores.map(rider => {
