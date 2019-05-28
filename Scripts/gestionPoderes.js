@@ -35,6 +35,7 @@ jugadores.forEach(element => {
 return validate;
 }
 
+//Este metodo lo que hace es setear al jugador ganador como representante
 gestPoderes.poderEleccionRep = function(jugadores, ganador){
     let validate = false;
     
@@ -52,6 +53,8 @@ gestPoderes.poderEleccionRep = function(jugadores, ganador){
     });
     return validate;
 }
+//Aqui se debe crear el metodo para que el rep tome accion sobre un empate
+
 
 gestPoderes.poderMentor = function(jugadores, jugadorAConocer, jugadorMentor){
 let fetchedPlayer;
@@ -73,11 +76,17 @@ if(!validatePlayerMeet || !validateMentor){
 return fetchedPlayer;
 }
 
-gestPoderes.poderEstado = function(jugadores, jugadorEstado, jugadorABuscar, desicion){
+gestPoderes.poderEstado = function(match, jugadorEstado, jugadorABuscar, desicion){
     let validateEstado = false;
     let validatePlayerMeet = false;
+    let dataSend = {
+        pass: false,
+        jugadores: match.jugadores
+    }
 
-    jugadores.forEach(e => {
+    console.log(jugadorEstado);
+    console.log(jugadorABuscar);
+    match.jugadores.forEach(e => {
         if(e.email == jugadorEstado){
             if(desicion == "salvar"){
             e.powerUsed = true;
@@ -99,11 +108,11 @@ gestPoderes.poderEstado = function(jugadores, jugadorEstado, jugadorABuscar, des
             }
         }
     });
-    if(!validateEstado && !validatePlayerMeet){
-        return false;
+    if(validateEstado && validatePlayerMeet){
+        dataSend.pass = true;
     }
 
-    return true;   
+    return dataSend;   
 }
 
 module.exports = gestPoderes;
