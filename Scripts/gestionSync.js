@@ -43,7 +43,7 @@ gestSync.todosHanVotado = function(jugadores){
     let playersThatVoted = 0;
 
     jugadores.forEach(e => {
-        if(e.email != "deadPlayer" ){
+        if(e.nombreCarta != "deadPlayer" ){
             contPlayers = contPlayers + 1;
             if(e.hasVoted == true){
             playersThatVoted = playersThatVoted +1 ;
