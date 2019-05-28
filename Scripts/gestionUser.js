@@ -13,6 +13,7 @@ gestUser.conseguirPersonaje = function(jugadores, nombreA){
             userFetched = element;
         }
     });
+    console.log(userFetched);
     return userFetched;
 }
 
