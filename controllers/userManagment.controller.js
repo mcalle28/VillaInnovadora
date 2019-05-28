@@ -50,8 +50,8 @@ exports.obtenerPersonaje = (req, res , next) => {
 
     partidaInGame.findOne({codigo: _codigo})
     .then(match =>{
-        console.log(match.jugadores);
         let personaje = gestUser.conseguirPersonaje(match.jugadores, _nombreA);
+        console.log(personaje);
           res.status(200).json({
               message: "Se logro entronctrar el jugador", 
               rol: personaje.nombreCarta,
